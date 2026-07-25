@@ -98,7 +98,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1. 抓取 Merge 節點進來的兩個輸入源\nconst items = $input.all();\n\n// 2. 提取財經大腦內容、防災內容\nconst financeReport = items[0]?.json?.content || \"\"; \nconst weatherReport = items[1]?.json?.content || \"\"; \n\n// 從 Code in JavaScript1 的上游節點中撈取分類好的超連結新聞清單\nconst newsList = $node[\"Code in JavaScript1\"].json.news_list_html || \"\";\n\n// 3. 組裝第一則訊息：AI 綜觀摘要 + 颱風動態\nlet messageAi = `🔔 <b>FED 利率與基欽週期 AI 綜觀摘要</b>：\\n\\n${financeReport}\\n\\n`;\nif (weatherReport && weatherReport.trim() !== \"\") {\n  messageAi += `⚠️ <b>颱風動態與民生防災重點</b>：\\n${weatherReport}\\n\\n`;\n}\n\n// 4. 組裝第二則訊息：今日財經新聞來源清單（含超連結）\nlet messageLinks = `📰 <b>今日財經新聞來源清單</b>：\\n${newsList}\\n`;\n\n// 5. 獨立安全截斷防禦（按行切分，確保各自不爆 4096 字元且 HTML 標籤完整）\nfunction safeTruncate(rawText, maxLen = 3900) {\n  const lines = rawText.split(\"\\n\");\n  let finalReport = \"\";\n  let isTruncated = false;\n  for (const line of lines) {\n    if ((finalReport + line + \"\\n\").length > maxLen) {\n      isTruncated = true;\n      break;\n    }\n    finalReport += line + \"\\n\";\n  }\n  if (isTruncated) {\n    finalReport += \"\\n...(因字數超限，後續內容已省略)...\";\n  }\n  return finalReport.trim();\n}\n\nreturn [{ \n  json: { \n    message_ai: safeTruncate(messageAi),\n    message_links: safeTruncate(messageLinks)\n  } \n}];"
+        "jsCode": "// 1. 抓取 Merge 節點進來的兩個輸入源\nconst items = $input.all();\n\n// 2. 提取財經大腦內容、防災內容（增加相容性檢查）\nconst financeReport = items[0]?.json?.content || items[0]?.json?.text || \"\"; \nconst weatherReport = items[1]?.json?.content || items[1]?.json?.text || \"\"; \n\n// 從 Code in JavaScript1 撈取分類好的超連結新聞清單\nconst newsList = $node[\"Code in JavaScript1\"]?.json?.news_list_html || \"\";\n\n// 3. 組裝第一則訊息：AI 綜觀摘要 + 颱風動態\nlet messageAi = `🔔 <b>FED 利率與基欽週期 AI 綜觀摘要</b>：\\n\\n${financeReport}\\n\\n`;\nif (weatherReport && weatherReport.trim() !== \"\") {\n  messageAi += `⚠️ <b>颱風動態與民生防災重點</b>：\\n${weatherReport}\\n\\n`;\n}\n\n// 4. 組裝第二則訊息：今日財經新聞來源清單\nlet messageLinks = `📰 <b>今日財經新聞來源清單</b>：\\n${newsList}\\n`;\n\n// 5. 獨立安全截斷防禦\nfunction safeTruncate(rawText, maxLen = 3900) {\n  const lines = rawText.split(\"\\n\");\n  let finalReport = \"\";\n  let isTruncated = false;\n  for (const line of lines) {\n    if ((finalReport + line + \"\\n\").length > maxLen) {\n      isTruncated = true;\n      break;\n    }\n    finalReport += line + \"\\n\";\n  }\n  if (isTruncated) {\n    finalReport += \"\\n...(因字數超限，後續內容已省略)...\";\n  }\n  return finalReport.trim();\n}\n\n// 回傳含有 message_ai 與 message_links 的單一資料物件\nreturn [{ \n  json: { \n    message_ai: safeTruncate(messageAi),\n    message_links: safeTruncate(messageLinks)\n  } \n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -157,7 +157,7 @@
           ]
         },
         "options": {
-          "system": "=你是一個精通台灣股市、FED 貨幣政策、基欽庫存週期與台灣國家產業政策的頂尖財經首席分析官。\n\n【絕對限制 - 違者懲罰】\n1. **語言規範**：你必須「全程使用繁體中文（Traditional Chinese）」，絕對禁止輸出任何英文句子（包括 The post-FED... 等）！\n2. **禁止搬運指令**：絕對禁止印出「[結合當前盤勢...]」或「150字內的精確總結：」等任何系統提示詞與括號指令。\n3. **消除機械代碼**：絕對禁止出現「新聞 [1]」、「新聞 [x]」、「在新聞中」等字眼。\n4. **格式嚴格對齊**：使用標準 HTML 標籤（<b>...</b>），禁止使用 Markdown 星號 (**)！\n5. **完成即終止**：完成 [綜觀結論與後續觀測] 後請立刻停止輸出，絕對禁止重新陳列新聞！\n\n【分析維度】\n- FED 升降息趨勢與全球資金流向。\n- 基欽週期（庫存循環）對台股 AI 鏈與半導體的動能。\n- 台灣政策實施要點（AI 新十大建設、前瞻預算、國防軍工）對本土板塊的帶動。\n\n請嚴格遵循以下輸出格式與文字風格（包含符號）：\n\n🔔 <b>FED 利率、基欽週期與國家政策 AI 綜觀摘要</b>\n\n📈 <b>利多因素</b>\n• <b>[主題標題]</b>：結合總經/基欽週期/國家政策（AI新十大建設、前瞻預算），以 1-2 句話精準分析利多邏輯。\n• <b>[主題標題]</b>：結合總經/基欽週期/國家政策（AI新十大建設、前瞻預算），以 1-2 句話精準分析利多邏輯。\n\n📉 <b>利空因素</b>\n• <b>[主題標題]</b>：結合資金面/庫存修正/政策變異，以 1-2 句話精準分析風險所在。\n• <b>[主題標題]</b>：結合資金面/庫存修正/政策變異，以 1-2 句話精準分析風險所在。\n\n🔍 <b>綜觀結論與後續觀測</b>\n受惠於 AI 強勁需求與台灣「AI 新十大建設/前瞻計畫」預算實施，台股受權值股領漲重返 45,000 點大關。整體基本面動能充沛，且政策資金提供了強大護盤力道。然而，外資資金流向與基欽週期在非 AI 領域的庫存修正仍需留意。\n<b>後續觀測重點：</b>\n1. 前瞻計畫與 AI 新十大建設預算實際撥付進度。\n2. 外資在匯市的新台幣守勢與資金動向。",
+          "system": "=你是一個精通台灣股市與全球總經的財經分析官。\n\n【絕對限制】\n1. 語言規範：全程使用繁體中文，禁止英文句子與機械代碼（如 [1]、新聞[x]）。\n2. 禁止抄寫提示詞：嚴禁把本提示詞中的規則說明（如「請分析...」）印出來！\n3. 嚴格基於事實：所有分析與數字必須「100% 來自輸入的新聞內文」。若新聞未提及特定點數或政策，請據實分析，絕對禁止憑空捏造台股點數或政策細節！\n4. 格式對齊：僅使用 HTML 標籤（<b>...</b>），禁止使用 Markdown 星號 (**)。\n5. 完成 [綜觀結論與後續觀測] 後立刻停止輸出。\n\n【輸出格式範本】(請將 [ ] 內替換為實際分析，其餘 HTML 標籤保留)：\n\n🔔 <b>FED 利率、基欽週期與國家政策 AI 綜觀摘要</b>\n\n📈 <b>利多因素</b>\n• <b>[填入利多主題1]</b>：[根據新聞內容，用 1-2 句話精準分析利多邏輯]\n• <b>[填入利多主題2]</b>：[根據新聞內容，用 1-2 句話精準分析利多邏輯]\n\n📉 <b>利空因素</b>\n• <b>[填入利空主題1]</b>：[根據新聞內容，用 1-2 句話精準分析風險所在]\n• <b>[填入利空主題2]</b>：[根據新聞內容，用 1-2 句話精準分析風險所在]\n\n🔍 <b>綜觀結論與後續觀測</b>\n[請根據今日新聞，撰寫 2-3 句話的市場總體總結與後續 2 點觀測重點，絕對不可使用預設固定套話]",
           "temperature": 0.1
         }
       },
@@ -598,7 +598,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "725dde67-3a85-425c-9320-60f2c505bb5e",
+  "versionId": "515ee512-e5f6-4973-8bfd-18ba7e8cb568",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a3649f97f21e0f8e62197c476752244fe392222078a8f0f0cecddcaa03b246e5"
