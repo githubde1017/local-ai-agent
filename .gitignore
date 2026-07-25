@@ -1,0 +1,25 @@
+# 1. 忽略大型資料庫與持久化目錄
+n8n_data/
+open-webui/
+qdrant_storage/
+crawler/
+
+# 2. 忽略敏感環境變數與金鑰
+.env
+*.env
+*.key
+*.pem
+.env.keys
+
+# 3. 允許設定檔與工作流 JSON 進 Git
+!.env.example
+*.json
+!workflow/*.json
+!docker-compose.yml
+
+# 4. 暫存檔與系統檔
+node_modules/
+__pycache__/
+*.log
+.DS_Store
+Thumbs.db

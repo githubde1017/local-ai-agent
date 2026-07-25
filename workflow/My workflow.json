@@ -1,0 +1,609 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://www.cwa.gov.tw/rss/Data/cwa_warning.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        112
+      ],
+      "id": "524299c9-2e93-43f2-951e-e85573bdbc50",
+      "name": "RSS Typhone"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -640,
+        -32
+      ],
+      "id": "a70bb2cd-687f-44b5-a7ee-ed293f3fd275",
+      "name": "Trigger Hours"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        368,
+        112
+      ],
+      "id": "c2874f66-6169-4bdd-a809-721f9b6f513b",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "pubDate"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        160,
+        112
+      ],
+      "id": "4c9b883e-4208-486c-9d56-9f8d075c1c6c",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "jsCode": "let all_news = \"\";\nlet matchCount = 0;\n\n// 1. 定義嚴格的防災/氣象白名單關鍵字\nconst whiteList = [\"颱風\", \"暴風\", \"大雨\", \"豪雨\", \"淹水\", \"積水\", \"災情\", \"路樹\", \"倒塌\", \"停班\", \"停課\"];\n\n// 2. 定義黑名單（物理阻斷容易引發模型亂講歷史舊聞的字眼）\nconst blackList = [\"地震\", \"新冠\", \"確診\", \"武漢肺炎\", \"英特爾\", \"加州\"];\n\nfor (const item of $input.all()) {\n  const title = item.json.title || \"\";\n  const snippet = item.json.contentSnippet || \"\";\n  const fullText = (title + snippet).toLowerCase();\n  \n  // 檢查是否命中白名單，且不包含黑名單\n  const hasWhiteKeyword = whiteList.some(key => fullText.includes(key));\n  const hasBlackKeyword = blackList.some(key => fullText.includes(key));\n\n  if (hasWhiteKeyword && !hasBlackKeyword) {\n    matchCount++;\n    all_news += `【氣象新聞 ${matchCount}】\\n標題：${title}\\n摘要：${snippet}\\n---\\n`;\n  }\n}\n\n// 3. 關鍵防禦：如果過濾後完全沒有相關新聞，直接給出死板的無資料宣告，絕不留給 LLM 任何瞎編空間\nif (all_news === \"\") {\n  all_news = \"情報回報：今日台灣地區無任何颱風、路樹倒塌或停班停課之相關公開民生防災消息。\";\n}\n\nreturn [{ json: { all_news_text: all_news } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        112
+      ],
+      "id": "3a2e0291-58c6-4688-8db7-0e158f2e37ed",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "title",
+        "joinMode": "keepEverything",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1040,
+        -48
+      ],
+      "id": "0ed67d95-8f2b-41ea-8e6e-c3b6375322b4",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 抓取 Merge 節點進來的兩個輸入源\nconst items = $input.all();\n\n// 2. 提取財經大腦內容、防災內容\nconst financeReport = items[0]?.json?.content || \"\"; \nconst weatherReport = items[1]?.json?.content || \"\"; \n\n// 從 Code in JavaScript1 的上游節點中撈取分類好的超連結新聞清單\nconst newsList = $node[\"Code in JavaScript1\"].json.news_list_html || \"\";\n\n// 3. 組裝第一則訊息：AI 綜觀摘要 + 颱風動態\nlet messageAi = `🔔 <b>FED 利率與基欽週期 AI 綜觀摘要</b>：\\n\\n${financeReport}\\n\\n`;\nif (weatherReport && weatherReport.trim() !== \"\") {\n  messageAi += `⚠️ <b>颱風動態與民生防災重點</b>：\\n${weatherReport}\\n\\n`;\n}\n\n// 4. 組裝第二則訊息：今日財經新聞來源清單（含超連結）\nlet messageLinks = `📰 <b>今日財經新聞來源清單</b>：\\n${newsList}\\n`;\n\n// 5. 獨立安全截斷防禦（按行切分，確保各自不爆 4096 字元且 HTML 標籤完整）\nfunction safeTruncate(rawText, maxLen = 3900) {\n  const lines = rawText.split(\"\\n\");\n  let finalReport = \"\";\n  let isTruncated = false;\n  for (const line of lines) {\n    if ((finalReport + line + \"\\n\").length > maxLen) {\n      isTruncated = true;\n      break;\n    }\n    finalReport += line + \"\\n\";\n  }\n  if (isTruncated) {\n    finalReport += \"\\n...(因字數超限，後續內容已省略)...\";\n  }\n  return finalReport.trim();\n}\n\nreturn [{ \n  json: { \n    message_ai: safeTruncate(messageAi),\n    message_links: safeTruncate(messageLinks)\n  } \n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -272
+      ],
+      "id": "3f300f6f-7b47-4c46-8790-e2f11458541f",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "jcai/breeze-7b-instruct-v1_0:q4_0",
+          "mode": "list",
+          "cachedResultName": "jcai/breeze-7b-instruct-v1_0:q4_0"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=你現在是一個完全沒有創造力的「文字搬運優化器」。請嚴格且唯一依據下方 <data_packet> 標籤內的資訊進行摘要。\n\n<instructions>\n1. **零外部知識原則**：你只能使用標籤內的文字，嚴禁自己腦補或調用你歷史記憶中的加州地震、花蓮地震或新冠肺炎。\n2. **無資料處理**：如果標籤內寫著「情報回報：今日台灣地區無任何颱風...」，你必須直接回答「今日無相關公開防災情報。」，不准瞎編任何災情。\n3. **字詞嚴格對齊**：只要資料包裡沒有提到特定地名（如廣東、台東），你的輸出就絕對不允許出現這些地名。\n</instructions>\n\n<data_packet>\n{{ $json.all_news_text }}\n</data_packet>\n\n請嚴格依照以上規範，列點摘要出裡面的「颱風動態或民生災情重點」。\n**注意：不論資料包內容為何，你必須全程使用「繁體中文（Traditional Chinese）」回答，絕對不允許出現任何英文回覆。**\n\n報告結果："
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        768,
+        112
+      ],
+      "id": "65184ffb-1cff-4557-a81d-e2b842d5e683",
+      "name": "Message a model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "X5ldLOEMapwXIsTz",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "jcai/breeze-7b-instruct-v1_0:q4_0",
+          "mode": "list",
+          "cachedResultName": "jcai/breeze-7b-instruct-v1_0:q4_0"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=當前日期：{{ $json.current_date }}\n時事背景：{{ $json.us_gov_context }}\n\n以下是今日待分析的新聞文本：\n---\n{{ $json.all_news_text }}\n---\n請依照系統設定的原則，輸出利多/利空與綜觀結論。"
+            }
+          ]
+        },
+        "options": {
+          "system": "=你是一個精通台灣股市、FED 貨幣政策、基欽庫存週期與台灣國家產業政策的頂尖財經首席分析官。\n\n【絕對限制 - 違者懲罰】\n1. **語言規範**：你必須「全程使用繁體中文（Traditional Chinese）」，絕對禁止輸出任何英文句子（包括 The post-FED... 等）！\n2. **禁止搬運指令**：絕對禁止印出「[結合當前盤勢...]」或「150字內的精確總結：」等任何系統提示詞與括號指令。\n3. **消除機械代碼**：絕對禁止出現「新聞 [1]」、「新聞 [x]」、「在新聞中」等字眼。\n4. **格式嚴格對齊**：使用標準 HTML 標籤（<b>...</b>），禁止使用 Markdown 星號 (**)！\n5. **完成即終止**：完成 [綜觀結論與後續觀測] 後請立刻停止輸出，絕對禁止重新陳列新聞！\n\n【分析維度】\n- FED 升降息趨勢與全球資金流向。\n- 基欽週期（庫存循環）對台股 AI 鏈與半導體的動能。\n- 台灣政策實施要點（AI 新十大建設、前瞻預算、國防軍工）對本土板塊的帶動。\n\n請嚴格遵循以下輸出格式與文字風格（包含符號）：\n\n🔔 <b>FED 利率、基欽週期與國家政策 AI 綜觀摘要</b>\n\n📈 <b>利多因素</b>\n• <b>[主題標題]</b>：結合總經/基欽週期/國家政策（AI新十大建設、前瞻預算），以 1-2 句話精準分析利多邏輯。\n• <b>[主題標題]</b>：結合總經/基欽週期/國家政策（AI新十大建設、前瞻預算），以 1-2 句話精準分析利多邏輯。\n\n📉 <b>利空因素</b>\n• <b>[主題標題]</b>：結合資金面/庫存修正/政策變異，以 1-2 句話精準分析風險所在。\n• <b>[主題標題]</b>：結合資金面/庫存修正/政策變異，以 1-2 句話精準分析風險所在。\n\n🔍 <b>綜觀結論與後續觀測</b>\n受惠於 AI 強勁需求與台灣「AI 新十大建設/前瞻計畫」預算實施，台股受權值股領漲重返 45,000 點大關。整體基本面動能充沛，且政策資金提供了強大護盤力道。然而，外資資金流向與基欽週期在非 AI 領域的庫存修正仍需留意。\n<b>後續觀測重點：</b>\n1. 前瞻計畫與 AI 新十大建設預算實際撥付進度。\n2. 外資在匯市的新台幣守勢與資金動向。",
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        768,
+        -224
+      ],
+      "id": "7e71264f-2a76-4155-b594-209cc302a4b9",
+      "name": "Message a model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "X5ldLOEMapwXIsTz",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=site:ctee.com.tw+(台股+OR+行情)+when:12h&hl=zh-TW&gl=TW&ceid=TW:zh-Hant",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        -304
+      ],
+      "id": "de285352-1b46-4ec0-ac74-7571fd058315",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=site:udn.com+(產經+OR+台股)+when:12h&hl=zh-TW&gl=TW&ceid=TW:zh-Hant",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -336,
+        -176
+      ],
+      "id": "c7ff2688-fe70-44f8-9879-df755347cb0e",
+      "name": "RSS Read2"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=(台股+OR+大盤)+(行情+OR+國際政經+OR+美聯準)+when:12h&hl=zh-TW&gl=TW&ceid=TW:zh-Hant",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -432,
+        -416
+      ],
+      "id": "2a570040-4644-448b-9c2f-e8fd07dee3cb",
+      "name": "RSS Google News 12 hrs"
+    },
+    {
+      "parameters": {
+        "url": "https://tw.stock.yahoo.com/rss?category=tw-market",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -176,
+        -112
+      ],
+      "id": "54a8cc19-9b82-432b-9d10-921ee90adf6f",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        160,
+        -256
+      ],
+      "id": "16a7d328-ac59-41fb-abd5-7a287e2d6f1a",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "maxItems": 24
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -128
+      ],
+      "id": "ba27f393-9df6-4556-b523-7f7e957f2368",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "isoDate",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        352,
+        -336
+      ],
+      "id": "cd4004b0-3611-40c5-a69f-c5cb4c4f002d",
+      "name": "Sort1"
+    },
+    {
+      "parameters": {
+        "jsCode": "let all_news = \"\";\nconst savedTitles = []; // 用陣列存放已保留的清單，進行模糊比對\nconst newsByCategory = {}; // 用來按來源分類新聞的物件\nlet count = 0;\n\n// HTML 安全轉義函式，防止 Telegram 報錯\nfunction escapeHtml(text) {\n  return text\n    .replace(/&/g, \"&amp;\")\n    .replace(/</g, \"&lt;\")\n    .replace(/>/g, \"&gt;\")\n    .replace(/\"/g, \"&quot;\")\n    .replace(/'/g, \"&#039;\");\n}\n\n// 1. 遍歷並過濾所有輸入的 RSS 財經新聞\nfor (const item of $input.all()) {\n  const title = (item.json.title || \"無標題\").trim();\n  let snippet = (item.json.contentSnippet || \"\").trim();\n  const link = (item.json.link || \"#\").trim();\n  \n  // 嘗試解析新聞來源\n  let source = \"財經綜合報導\";\n  if (title.includes(\" - \")) {\n    const parts = title.split(\" - \");\n    source = parts[parts.length - 1].trim();\n  }\n\n  // 【強化版模糊去重防禦】\n  const cleanTitle = title.replace(/[\\s\\-_|、，。：:【】「」｜(（)）]/g, \"\"); \n\n  let isDuplicate = false;\n  for (const existingTitle of savedTitles) {\n    if (cleanTitle.includes(existingTitle) || existingTitle.includes(cleanTitle)) {\n      isDuplicate = true;\n      break;\n    }\n    if (cleanTitle.substring(0, 7) === existingTitle.substring(0, 7)) {\n      isDuplicate = true;\n      break;\n    }\n  }\n\n  if (isDuplicate) {\n    continue; // 命中重複，跳過\n  }\n\n  // 【純財經、總經與國家政策關鍵字篩選】\n  const financeKeywords = [\n    \"股\", \"台積電\", \"營收\", \"大盤\", \"指\", \"ETF\", \"外資\", \"證券\", \"經濟\", \"財經\", \"上市\",\n    \"美聯儲\", \"聯準會\", \"Fed\", \"升息\", \"降息\", \"利率\", \"國際政經\", \"政經\", \"基欽週期\", \"週期\",\n    \"前瞻\", \"國發會\", \"國發基金\", \"產業政策\", \"國家發展\", \"預算\", \"特別預算\", \"補助\", \"政策利多\", \"本土化\",\n    \"AI新十大建設\", \"信賴產業\", \"軍工\", \"無人機\", \"綠能\", \"主權AI\"\n  ];\n  const isFinance = financeKeywords.some(word => title.includes(word) || snippet.includes(word));\n  \n  if (!isFinance) {\n    continue; \n  }\n\n  // ─── 通過過濾，確定保留新聞 ───\n  if (cleanTitle.length > 0) {\n    savedTitles.push(cleanTitle); \n  }\n  \n  count++;\n\n  // 1. 餵給 AI 分析用的純文字\n  all_news += `新聞 [${count}] (來源：${source})\\n標題：${title}\\n摘要：${snippet}\\n---\\n`;\n\n  // 2. 依來源分類收集 HTML 資料\n  const safeTitle = escapeHtml(title);\n  const safeLink = link.replace(/&/g, \"&amp;\");\n  const htmlItem = `  • <a href=\"${safeLink}\">${safeTitle}</a>\\n`;\n\n  if (!newsByCategory[source]) {\n    newsByCategory[source] = [];\n  }\n  newsByCategory[source].push(htmlItem);\n}\n\n// 3. 將分類好的物件組合為條列式 HTML 文本\nlet news_list_html = \"\";\nif (count > 0) {\n  for (const source in newsByCategory) {\n    const safeSource = escapeHtml(source);\n    news_list_html += `<b>【${safeSource}】</b>\\n`; // 媒體來源做成粗體大分類\n    news_list_html += newsByCategory[source].join(\"\"); // 塞入該媒體的所有新聞\n    news_list_html += `\\n`; // 分類間空一行\n  }\n}\n\n// 修正時區問題\nconst today = new Date();\nconst formattedDate = today.toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei' });\nlet usGovContext = \"現任美國總統：唐納·川普（Donald Trump，第 47 任）[2026年執政]。政策：美國優先、關稅保護。\";\n\nif (all_news.trim() === \"\") {\n  all_news = \"今日無相關公開財經焦點情報。\";\n  news_list_html = \"今日無相關公開財經焦點情報。\\n\";\n}\n\nreturn [{ \n  json: { \n    current_date: formattedDate,\n    us_gov_context: usGovContext,\n    all_news_text: all_news,\n    news_list_html: news_list_html.trim() \n  } \n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        -320
+      ],
+      "id": "99b058ab-cb89-4be1-af79-f0ae5feca1de",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "chatId": "@n8n_tw_news_breeze",
+        "text": "={{ $json.message_ai }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1248,
+        -64
+      ],
+      "id": "0208633b-adb8-4cd0-ae4b-db28d822dcd2",
+      "name": "Send AI Summary",
+      "webhookId": "269f7c76-851f-4da6-86f0-fba734a295bd",
+      "credentials": {
+        "telegramApi": {
+          "id": "nZkO0NufIbOkfRs2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "@n8n_tw_news_breeze",
+        "text": "={{ $node[\"Code in JavaScript2\"].json.message_links }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1248,
+        144
+      ],
+      "id": "dfbbdce6-5d60-47c7-a210-4ac36818e55e",
+      "name": "Send News Links",
+      "webhookId": "269f7c76-851f-4da6-86f0-fba734a295bd",
+      "credentials": {
+        "telegramApi": {
+          "id": "nZkO0NufIbOkfRs2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=(前瞻計畫+OR+AI新十大建設+OR+特別預算+OR+國防預算+OR+國發會+OR+產業政策)+when:12h&hl=zh-TW&gl=TW&ceid=TW:zh-Hant",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        -32
+      ],
+      "id": "a221fc7e-40e8-4bb8-bf5b-1028cf586f36",
+      "name": "RSS  TWDev"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Trigger Hours": {
+      "main": [
+        [
+          {
+            "node": "RSS Typhone",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Google News 12 hrs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS  TWDev",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Typhone": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send AI Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Google News 12 hrs": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "RSS Read2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Sort1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort1": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send AI Summary": {
+      "main": [
+        [
+          {
+            "node": "Send News Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS  TWDev": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "725dde67-3a85-425c-9320-60f2c505bb5e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a3649f97f21e0f8e62197c476752244fe392222078a8f0f0cecddcaa03b246e5"
+  },
+  "nodeGroups": [],
+  "id": "7t5ImGgb8YXowzIy",
+  "tags": []
+}
