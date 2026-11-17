@@ -19,6 +19,8 @@ import urllib.error
 import urllib.request
 
 BASE = os.environ.get("OWUI_BASE_URL", "http://localhost:3000")
+if not BASE.startswith(("http://localhost:", "http://127.0.0.1:")):
+    sys.exit(f"OWUI_BASE_URL 只允許本機位址，避免 API key 送到其他主機：{BASE}")
 ORPHAN_FILE_IDS = (
     "baa836b1-691d-41c3-96e1-472d6782041a",
     "b85cb0f2-6c74-4aa6-938f-8d84094473a8",
@@ -26,7 +28,7 @@ ORPHAN_FILE_IDS = (
 PIPE_ID = "claude_gemini"
 PIPE_DESCRIPTION = (
     "同時詢問 Groq 與 Google Gemini，並讓兩者互相看到對方的回答進行交叉點評。"
-    "⚠️ 對話內容會送到 Groq 與 Google 的外部 API（本專案唯一的外送例外）。"
+    "⚠️ 對話內容會送到 Groq 與 Google 的外部 API（Open WebUI 中唯一的外送例外）。"
 )
 
 
@@ -89,7 +91,7 @@ def pipe_description(key: str, apply: bool) -> None:
     form = {"id": fn["id"], "name": fn["name"], "content": fn["content"], "meta": meta}
     status, res = call("POST", f"/api/v1/functions/id/{PIPE_ID}/update", key, form)
     ok = isinstance(res, dict) and res.get("meta", {}).get("description") == PIPE_DESCRIPTION
-    print("更新", status, "成功" if ok else res)
+    print("更新", status, "成功" if ok else (str(res)[:200] if not isinstance(res, dict) else "描述未更新"))
 
 
 def main() -> int:

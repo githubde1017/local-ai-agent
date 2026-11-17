@@ -3,7 +3,8 @@
 背景：Open WebUI 0.10.2 刪檔時呼叫 vector delete 沒帶 ids/filter，Chroma 實作會直接略過，
 所以 `file-<id>` collection 會殘留；SQLite 也沒有啟用外鍵，knowledge_file 會留下懸空列。
 
-**只能在 open-webui 容器停止時執行**，用同一顆映像的一次性容器跑：
+**只能在 open-webui 容器停止時執行**（腳本在一次性容器內無法檢查主機上的容器狀態，
+執行前請先 `docker stop open-webui` 並確認 `docker ps` 沒有它），用同一顆映像的一次性容器跑：
     docker run --rm -v D:/local-ai-agent/open-webui:/app/backend/data \
       -v D:/01_Workflow/local-ai-agent/scripts:/scripts --entrypoint python <image> \
       /scripts/owui_purge_orphans.py [--apply]
@@ -32,9 +33,13 @@ def main() -> int:
     if len(targets) != len(ORPHAN_FILE_IDS):
         raise SystemExit(f"中止：仍有孤兒檔存在於 file 表 {set(ORPHAN_FILE_IDS) - set(targets)}")
 
+    # 只處理指定孤兒檔的懸空列，不碰其他資料
+    marks = ",".join("?" * len(targets))
     dangling = con.execute(
         "select kf.id, kf.knowledge_id, kf.file_id from knowledge_file kf "
-        "left join knowledge k on k.id = kf.knowledge_id where k.id is null"
+        "left join knowledge k on k.id = kf.knowledge_id "
+        f"where k.id is null and kf.file_id in ({marks})",
+        targets,
     ).fetchall()
     print("懸空 knowledge_file：", [(r[0][:8], r[1][:8], r[2][:8]) for r in dangling])
 
@@ -53,12 +58,14 @@ def main() -> int:
         print("預覽模式，未變更")
         return 0
 
+    # 先完成資料庫交易再刪向量：DB 失敗時向量仍完整，可重跑
+    with con:
+        con.executemany("delete from knowledge_file where id = ?", [(r[0],) for r in dangling])
+    con.close()
+    print("已刪除懸空 knowledge_file", len(dangling), "筆")
     for n in cols:
         client.delete_collection(n)
         print("已刪除", n)
-    with con:
-        con.executemany("delete from knowledge_file where id = ?", [(r[0],) for r in dangling])
-    print("已刪除懸空 knowledge_file", len(dangling), "筆")
     remaining = {c if isinstance(c, str) else c.name for c in client.list_collections()}
     print("剩餘 collection：", sorted(remaining))
     return 0

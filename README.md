@@ -67,7 +67,7 @@
 | `claude_gemini` pipe | Open WebUI → Functions | 該模型對話的提問與歷史訊息（最近數則） | Groq API、Google Gemini API |
 | n8n 新聞 Bot | `workflow/*.json` | RSS 摘要結果 | Telegram |
 
-其餘對話（Ollama 本地模型）與知識庫檢索都只在本機處理。Open WebUI 的 OpenAI 連線已關閉。
+在 Open WebUI 中，`claude_gemini` 是唯一會外送資料的元件；其餘對話（Ollama 本地模型）與知識庫檢索都只在本機處理。Open WebUI 的 OpenAI 連線已關閉。
 
 ---
 
@@ -123,6 +123,21 @@ docker-compose up -d --build
 * **Qdrant 儀表板**：`http://localhost:6333/dashboard`
 * **Ollama API**：`http://localhost:11434`
 * **Crawler API**：`http://localhost:5000`
+
+### 4. Open WebUI 維護腳本
+
+| 腳本 | 用途 | 需要 |
+|---|---|---|
+| `scripts/owui_audit.py` | 唯讀盤點：孤兒檔、懸空連結、向量維度、RAG 設定 | 無 |
+| `scripts/owui_p0_api.py` | 透過 API 刪孤兒檔、關 OpenAI 連線、更新 pipe 描述（預設只預覽，加 `--apply` 才執行） | 環境變數 `OWUI_API_KEY` |
+| `scripts/owui_purge_orphans.py` | 清除刪檔後殘留的向量集合與懸空連結（**須先停 open-webui**，用一次性容器執行，見檔頭說明） | 無 |
+
+`OWUI_API_KEY` 在 Open WebUI「設定 → 帳號 → API 金鑰」產生（管理員須先在「管理員控制台 → 設定 → 驗證」開啟「啟用 API 金鑰」）。只放在自己終端機的環境變數，不要寫進 repo：
+
+```powershell
+$env:OWUI_API_KEY = "sk-..."
+py -3.10 scripts/owui_audit.py
+```
 
 ---
 
