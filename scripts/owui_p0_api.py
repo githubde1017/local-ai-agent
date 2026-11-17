@@ -16,10 +16,12 @@ import json
 import os
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 
 BASE = os.environ.get("OWUI_BASE_URL", "http://localhost:3000")
-if not BASE.startswith(("http://localhost:", "http://127.0.0.1:")):
+_u = urllib.parse.urlparse(BASE)
+if _u.scheme != "http" or _u.hostname not in ("localhost", "127.0.0.1") or "@" in BASE:
     sys.exit(f"OWUI_BASE_URL 只允許本機位址，避免 API key 送到其他主機：{BASE}")
 ORPHAN_FILE_IDS = (
     "baa836b1-691d-41c3-96e1-472d6782041a",
@@ -53,6 +55,10 @@ def call(method: str, path: str, key: str, body: dict | None = None):
             return r.status, json.loads(raw) if raw else None
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode(errors="replace")[:300]
+    except (urllib.error.URLError, OSError) as e:
+        sys.exit(f"連不上 {BASE}：{getattr(e, 'reason', e)}（Open WebUI 有在跑嗎？）")
+    except json.JSONDecodeError:
+        sys.exit(f"{BASE}{path} 回應不是 JSON，請確認 OWUI_BASE_URL 指向 Open WebUI。")
 
 
 def delete_orphans(key: str, apply: bool) -> None:

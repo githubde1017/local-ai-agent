@@ -1,0 +1,4 @@
+date,commit,metric,value,command
+2026-11-18,e2d6c04+wip,iobom_pytest_passed,6,py -3.10 -m pytest -q tests
+2026-11-18,e2d6c04+wip,iobom_injected_error_types_caught,7,py -3.10 -m pytest -q tests
+2026-11-18,e2d6c04+wip,eval_public_draft_questions,30,scripts/make_eval_public_415.py

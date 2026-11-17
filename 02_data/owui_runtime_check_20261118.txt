@@ -1,0 +1,20 @@
+PASS 公開資料 csv 產生報告
+PASS xlsx（BOM 放第一個）與 csv 結果相同
+PASS SCBR-C6701.CMDRUN 列為 BOM 找不到（同迴路錯配已修）
+PASS 只附一個檔會提示
+PASS 同一個檔附兩次會提示
+PASS 兩個都是 BOM 會提示
+PASS 上傳目錄以外的路徑被拒
+PASS 欄位名稱錯誤回傳說明而不是乾淨結果
+PASS 乾淨 fixture 零發現
+IO List：`io_list.csv`（305 列）｜BOM：`equipment_list.csv`（225 列）
+## IO List × BOM 交叉檢查
+- IO 點（不含 SPARE）：186；BOM 有 tag 的品項：205；不重複 IO tag 中對到 BOM 的：73／80
+### 需要處理
+- **IO List 有、BOM 找不到**（7）：`HS-C6001_2`、`CP-M826.UPS01`、`SCBR-C6701.CMDRUN`、`XV-X6111.CMDOPN`、`CP-C827.UPS01`、`ZSC-M9001`、`ZSC-M9002`
+- **tag 與描述的設備編號不一致**（10）：`Maclean:EF-C640.Flt ↔ 描述寫 EF-C641`、`Maclean:XV-C6401.ZSC ↔ 描述寫 XV-C6011`、`Maclean:HS-C6001_2 ↔ 描述寫 HS-C6001、HS-C6002`、`Maclean:SCBR-C6701.CmdRun ↔ 描述寫 SCBR-C670`、`Maclean:XV-X6111.CmdOpn ↔ 描述寫 XV-C6111`、`McPhillips:EF-C640.Flt ↔ 描述寫 EF-C641`、`McPhillips:XV-C6401.ZSC ↔ 描述寫 XV-C6011`、`McPhillips:AHU-C602.CmdRun ↔ 描述寫 AHU-C601`、`Hurst:EF-C640.Flt ↔ 描述寫 EF-C641`、`Hurst:XV-C6401.ZSC ↔ 描述寫 XV-C6011`
+- **重複的 IO tag**（1）：`Hurst:CP-C827.UPS01×2`
+- **重複的 PLC 位址**（0）：無
+- **不符命名規則**（1）：`HS-C6001_2`
+- **空白或大小寫問題**（0）：無
+9/9 通過
