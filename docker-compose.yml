@@ -34,10 +34,13 @@ services:
 
   # 3. AI 助理前端介面
   open-webui:
-    image: ghcr.io/open-webui/open-webui:main
+    # 以 digest 固定版本：0.10.2（main 分支 build ecd48e2，2026-07-01）。
+    # 這顆和官方 v0.10.2 tag 的 digest 不同；要升級時先備份 webui.db，再改這一行。
+    image: ghcr.io/open-webui/open-webui@sha256:a26effeb220e132482bf7e0560b3404843e7bc40d23051144e062960df8df6b0
     container_name: open-webui
     ports:
-      - "3000:8080"
+      # 只綁本機，區網其他裝置連不到
+      - "127.0.0.1:3000:8080"
     volumes:
       - "D:/local-ai-agent/open-webui:/app/backend/data"
     environment:

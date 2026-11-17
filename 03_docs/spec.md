@@ -55,7 +55,7 @@ David 自用的本地中文專業文件問答助理：問「噪音」知識庫�
 - 分支命名與 commit 粒度（每完成一個驗收項目 commit，訊息用繁體中文）
 
 ## 必須停下來問我
-- 建立 Open WebUI API key：請 David 在 UI 產生，放進 `.env` 的 `OWUI_API_KEY`，Claude 不自行建立
+- 建立 Open WebUI API key：請 David 在 UI 產生，Claude 不自行建立。key 只透過環境變數 `OWUI_API_KEY` 給腳本使用；`.env` 受 hook 保護，腳本也不得讀取。需要 key 的 `--apply` 步驟由 David 在自己的終端機執行
 - 除了兩份孤兒檔案以外，要刪除任何上傳檔、知識庫、對話或 collection
 - 在容器運作中直接寫入 `webui.db`（API 做不到、必須直接改 DB 時，要先停容器、先備份、先問）
 - 刪除 `cache/embedding`（889 MB 的 MiniLM 快取）
