@@ -53,10 +53,21 @@
 
 ## ✨ 核心特色 (Key Features)
 
-* **🔒 100% 本地數據隱私**：資料庫、對話記錄與 Vector DB 皆存放於本地硬碟，絕無數據外流風險。
+* **🔒 本地數據隱私**：資料庫、對話記錄與 Vector DB 皆存放於本地硬碟；唯一的例外見下方「外部資料傳輸例外」。
 * **⚡ 雙硬碟架構優化**：模型載入放 SSD (`F:/ollama`)，海量儲存與向量庫放大容量 HDD (`D:/local-ai-agent`)。
 * **🧩 模組化自動化工作流**：使用 n8n 串接 Telegram Bot、搜尋 API 與本地 LLM，輕鬆建立無人值守 Agent。
 * **🐳 一鍵 Docker Compose 部署**：免去繁雜的環境安裝，直接一鍵啟動全套 AI 生態系。
+
+### ⚠️ 外部資料傳輸例外
+
+以下元件會把資料送出本機，使用時請留意：
+
+| 元件 | 位置 | 送出的資料 | 送往 |
+|---|---|---|---|
+| `claude_gemini` pipe | Open WebUI → Functions | 該模型對話的提問與歷史訊息（最近數則） | Groq API、Google Gemini API |
+| n8n 新聞 Bot | `workflow/*.json` | RSS 摘要結果 | Telegram |
+
+其餘對話（Ollama 本地模型）與知識庫檢索都只在本機處理。Open WebUI 的 OpenAI 連線已關閉。
 
 ---
 
@@ -107,7 +118,7 @@ docker-compose up -d --build
 
 啟動後即可透過瀏覽器存取以下服務：
 
-* **Open WebUI 介面**：`http://localhost:3000`
+* **Open WebUI 介面**：`http://localhost:3000`（只綁本機，區網其他裝置無法連線）
 * **n8n 工作流介面**：`http://localhost:5678`
 * **Qdrant 儀表板**：`http://localhost:6333/dashboard`
 * **Ollama API**：`http://localhost:11434`
@@ -118,16 +129,21 @@ docker-compose up -d --build
 ## 📂 專案架構 (Project Structure)
 
 ```text
-local-ai-agent/
+local-ai-agent/               # 原始碼（本 repo）
+├── 02_data/                # 驗收紀錄與指標
+├── 03_docs/                # spec 與設計文件
 ├── crawler/                # 自訂爬蟲服務與 Dockerfile
-├── n8n_data/               # n8n 資料與自訂節點 (Baseten, SerpApi, GSC...)
-├── open-webui/             # Open WebUI 快取、嵌入模型模型與向量庫資料
-├── qdrant_storage/         # Qdrant 向量資料庫實體數據
+├── scripts/                # Open WebUI 盤點與維護腳本
 ├── workflow/               # 匯出的 n8n 工作流 JSON 檔案目錄
 ├── .env                    # 環境變數設定檔 (已在 .gitignore 中忽略)
 ├── .env.example            # 環境變數範本檔
 └── docker-compose.yml      # Docker 容器編排設定檔
 
+D:/local-ai-agent/            # 容器資料（不進 git，由 compose 掛載）
+├── n8n_data/               # n8n 資料與自訂節點
+├── open-webui/             # Open WebUI 資料庫、上傳檔、向量庫與快取
+├── qdrant_storage/         # Qdrant 向量資料庫實體數據
+└── _backup/                # 手動備份
 ```
 
 ---
