@@ -34,9 +34,10 @@ services:
 
   # 3. AI 助理前端介面
   open-webui:
-    # 以 digest 固定版本：0.10.2（main 分支 build ecd48e2，2026-07-01）。
-    # 這顆和官方 v0.10.2 tag 的 digest 不同；要升級時先備份 webui.db，再改這一行。
-    image: ghcr.io/open-webui/open-webui@sha256:a26effeb220e132482bf7e0560b3404843e7bc40d23051144e062960df8df6b0
+    # 以 digest 固定版本：v0.13.4（官方 tag，2026-11-17）。2026-11-18 由 0.10.2 升級，
+    # 升級前備份在 D:/local-ai-agent/_backup/open-webui_20261118_pre0134_stopped。
+    # 要升級時先停容器、備份 webui.db 與 uploads、vector_db，再改這一行。
+    image: ghcr.io/open-webui/open-webui@sha256:d5168bfbc28609eff5bea1b438dd864cf64d185cf6582c02244865e18385b901
     container_name: open-webui
     ports:
       # 只綁本機，區網其他裝置連不到
@@ -45,6 +46,8 @@ services:
       - "D:/local-ai-agent/open-webui:/app/backend/data"
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
+      # 沒設 WEBUI_SECRET_KEY 時映像會自動產生金鑰；存進資料夾才不會每次重建容器就讓所有人登出
+      - WEBUI_SECRET_KEY_FILE=/app/backend/data/.webui_secret_key
     depends_on:
       - ollama
     restart: unless-stopped
