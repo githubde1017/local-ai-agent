@@ -57,6 +57,7 @@
 * **⚡ 雙硬碟架構優化**：模型載入放 SSD (`F:/ollama`)，海量儲存與向量庫放大容量 HDD (`D:/local-ai-agent`)。
 * **🧩 模組化自動化工作流**：使用 n8n 串接 Telegram Bot、搜尋 API 與本地 LLM，輕鬆建立無人值守 Agent。
 * **🐳 一鍵 Docker Compose 部署**：免去繁雜的環境安裝，直接一鍵啟動全套 AI 生態系。
+* **📋 IO List × BOM 交叉檢查（Open WebUI Tool）**：在對話附上 IO List 與設備清單（csv／xlsx），本機檢查缺漏、重複 tag／PLC 位址、命名、tag 與描述不一致，檔案不離開本機。見下方「5. IO List × BOM 檢查 Tool」。
 
 ### ⚠️ 外部資料傳輸例外
 
@@ -139,6 +140,28 @@ $env:OWUI_API_KEY = "sk-..."
 py -3.10 scripts/owui_audit.py
 ```
 
+### 5. IO List × BOM 檢查 Tool 與評測題
+
+檢查邏輯只維護 `owui_tools/iobom_check.py` 一份；`owui_tools/tool_wrapper.py` 是 Open WebUI Tool 外殼，由建置腳本合成單一檔 `owui_tools/dist/iobom_check_tool.py`（建置產物，不進 git）。
+
+| 腳本 | 用途 | 需要 |
+|---|---|---|
+| `scripts/build_owui_tool.py` | 合成 Tool 單一檔 | 無 |
+| `scripts/owui_install_tool.py` | 透過 API 安裝或更新 Tool（預設只預覽，加 `--apply` 才寫入） | 環境變數 `OWUI_API_KEY` |
+| `scripts/owui_runtime_check.py` | 在 Open WebUI 映像內實際執行 Tool 的 9 項檢查（一次性容器，指令見檔頭） | Docker |
+| `scripts/pdf_to_txt.py` | PDF 逐頁抽文字（映像內執行，用映像附帶的 pypdf） | Docker |
+| `scripts/winnipeg_pdf_to_csv.py` | 公開語料（溫尼伯 Tender 415-2025）的 IO／設備清單轉 csv | 無 |
+| `scripts/make_eval_public_415.py` | 由公開語料產生評測題草稿，頁碼以原文錨點定位 | 無 |
+
+```powershell
+py -3.10 -m pip install -r requirements-dev.txt   # pytest、openpyxl（只在開發機）
+py -3.10 -m pytest -q tests
+py -3.10 scripts/build_owui_tool.py
+py -3.10 scripts/owui_install_tool.py            # 預覽；確認後加 --apply
+```
+
+Tool 安裝後在 Open WebUI「工作區 → 工具」可調整 Valves：欄位名稱（IO tag、描述、位址、分站欄位）、SPARE 值、tag 命名規則。命名規則預設值是由公開資料歸納，換成案場文件前需確認。目前限制：BOM 沒有分站欄位，比對是全域的。
+
 ---
 
 ## 📂 專案架構 (Project Structure)
@@ -147,9 +170,13 @@ py -3.10 scripts/owui_audit.py
 local-ai-agent/               # 原始碼（本 repo）
 ├── 02_data/                # 驗收紀錄與指標
 ├── 03_docs/                # spec 與設計文件
+│   └── eval/               # 評測題（目前為公開語料草稿，reviewed: false）
 ├── crawler/                # 自訂爬蟲服務與 Dockerfile
-├── scripts/                # Open WebUI 盤點與維護腳本
+├── owui_tools/             # Open WebUI Tool：檢查邏輯、外殼、dist/（建置產物）
+├── scripts/                # Open WebUI 盤點、維護、Tool 建置安裝與評測腳本
+├── tests/                  # pytest 與測試用 csv
 ├── workflow/               # 匯出的 n8n 工作流 JSON 檔案目錄
+├── requirements-dev.txt    # 開發用套件（pytest、openpyxl）
 ├── .env                    # 環境變數設定檔 (已在 .gitignore 中忽略)
 ├── .env.example            # 環境變數範本檔
 └── docker-compose.yml      # Docker 容器編排設定檔
@@ -158,6 +185,7 @@ D:/local-ai-agent/            # 容器資料（不進 git，由 compose 掛載�
 ├── n8n_data/               # n8n 資料與自訂節點
 ├── open-webui/             # Open WebUI 資料庫、上傳檔、向量庫與快取
 ├── qdrant_storage/         # Qdrant 向量資料庫實體數據
+├── corpus/                 # 評測與開發用文件（公開語料、日後的案場文件）
 └── _backup/                # 手動備份
 ```
 
