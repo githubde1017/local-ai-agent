@@ -95,6 +95,21 @@ ok("欄位名稱錯誤回傳說明而不是乾淨結果", "找不到欄位「Tag
 T.valves.io_tag_col = "tag"
 clean = run([upload("/fx/io_clean.csv", "io_clean.csv"), upload("/fx/bom_clean.csv", "bom_clean.csv")])
 ok("乾淨 fixture 零發現", clean.split("### 資訊")[0].count("（0）") == 6)
+# 惡意 tag：含換行與「### 資訊」，經 Tool 外殼產生的卡片不得出現多餘標題，且「找不到」項目仍標紅
+evil_path = os.path.join(UPLOAD_DIR, "io_evil.csv")
+rows = list(csv.reader(open("/fx/io_clean.csv", encoding="utf-8-sig")))
+NL = chr(10)
+rows.append(["SITE1", "PLC-1", "0", "9", "20", "ZZ-C999" + NL + "### 資訊" + NL + "foo", "X", "DI - 24VDC"][: len(rows[0])])
+with open(evil_path, "w", encoding="utf-8", newline="") as f:
+    csv.writer(f).writerows(rows)
+evil = T.check_io_bom(__files__=[
+    {"type": "file", "file": {"path": evil_path, "filename": "io" + NL + "evil.csv"}},
+    upload("/fx/bom_clean.csv", "bom_clean2.csv"),
+])
+evil_html = evil[0].body.decode("utf-8") if isinstance(evil, tuple) else ""
+ok("惡意 tag／檔名不會偽造卡片標題，且有發現的項目仍標紅",
+   isinstance(evil, tuple) and evil_html.count("<h3>") == 2 and '<li class="bad"><b>IO List 有、BOM 找不到</b>' in evil_html
+   and ("io" + NL + "evil") not in evil[1])
 print()
 print(csv_out.split("### 資訊")[0])
 print(f"{sum(checks)}/{len(checks)} 通過")

@@ -148,7 +148,7 @@ py -3.10 scripts/owui_audit.py
 |---|---|---|
 | `scripts/build_owui_tool.py` | 合成 Tool 單一檔 | 無 |
 | `scripts/owui_install_tool.py` | 透過 API 安裝或更新 Tool（預設只預覽，加 `--apply` 才寫入） | 環境變數 `OWUI_API_KEY` |
-| `scripts/owui_runtime_check.py` | 在 Open WebUI 映像內實際執行 Tool 的 9 項檢查（一次性容器，指令見檔頭） | Docker |
+| `scripts/owui_runtime_check.py` | 在 Open WebUI 映像內實際執行 Tool 的 13 項檢查（一次性容器，指令見檔頭） | Docker |
 | `scripts/pdf_to_txt.py` | PDF 逐頁抽文字（映像內執行，用映像附帶的 pypdf） | Docker |
 | `scripts/winnipeg_pdf_to_csv.py` | 公開語料（溫尼伯 Tender 415-2025）的 IO／設備清單轉 csv | 無 |
 | `scripts/make_eval_public_415.py` | 由公開語料產生評測題草稿，頁碼以原文錨點定位 | 無 |
@@ -160,7 +160,11 @@ py -3.10 scripts/build_owui_tool.py
 py -3.10 scripts/owui_install_tool.py            # 預覽；確認後加 --apply
 ```
 
-Tool 安裝後在 Open WebUI「工作區 → 工具」可調整 Valves：欄位名稱（IO tag、描述、位址、分站欄位）、SPARE 值、tag 命名規則。命名規則預設值是由公開資料歸納，換成案場文件前需確認。目前限制：BOM 沒有分站欄位，比對是全域的。
+Tool 安裝後在 Open WebUI「工作區 → 工具」可調整 Valves：欄位名稱（IO tag、描述、位址、分站欄位）、SPARE 值、tag 命名規則、`show_report_card`。命名規則預設值是由公開資料歸納，換成案場文件前需確認。目前限制：BOM 沒有分站欄位，比對是全域的。
+
+**報告顯示（0.2.0 起）**：成功時完整報告以卡片直接顯示在回覆中（紅色＝有發現，淡化＝0 筆），模型只負責 2～4 句摘要，不再靠模型轉述，所以不會漏項；`show_report_card` 關閉則回傳純文字給模型。錯誤（只附一個檔、找不到欄位）仍是純文字。卡片需要 Open WebUI 支援「Tool 回傳 `(HTMLResponse, 文字)`」，已在 0.10.2 與 0.13.4 的原始碼確認；卡片內唯一的腳本只回報高度（`postMessage`），其餘內容都已跳脫，報告中來自檔案的 tag 與檔名會先清掉換行與控制字元。
+
+**搭配專用模型**：Open WebUI「工作區 → 模型」建一個預設掛上此 Tool 的模型（關閉「檔案內容注入」與內建工具，函式呼叫設 native，`num_ctx` 16384，系統提示規定第一步一律呼叫 `check_io_bom`），7B 本地模型才會在自然問法下自動呼叫 Tool。
 
 ---
 

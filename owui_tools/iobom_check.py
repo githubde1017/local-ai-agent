@@ -294,11 +294,22 @@ def _fix_case(raw: str) -> str:
     return head.upper() + dot + tail
 
 
+_CONTROL = re.compile(r"[\x00-\x1f\x7f-\x9f  ]+")
+
+
+def clean_text(s: str) -> str:
+    """報告中所有來自使用者檔案的文字（tag、檔名）都要先過這裡。
+    換行與控制字元（含 \\x0b、\\x1c、\\x85、\\u2028 等會被 splitlines 切行的）換成空格，
+    否則 tag 內含「\\n### 資訊」之類的內容會偽造報告結構；反引號與星號會讓 Markdown 的 code／粗體
+    在不同項目間錯誤配對，分別換成 ' 與全形＊（外觀相近）。"""
+    return _CONTROL.sub(" ", str(s)).replace("`", "'").replace("*", "＊")
+
+
 def format_report(r: Result, top: int = 30) -> str:
     def lst(items) -> str:
         items = list(items)
         more = f"（另有 {len(items) - top} 筆）" if len(items) > top else ""
-        return "、".join(f"`{x}`" for x in items[:top]) + more if items else "無"
+        return "、".join(f"`{clean_text(x)}`" for x in items[:top]) + more if items else "無"
 
     lines = [
         "## IO List × BOM 交叉檢查",

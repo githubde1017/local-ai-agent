@@ -187,3 +187,73 @@ def test_html_card_marks_nonzero_findings():
     page = ck.report_to_html(_injected_report())
     assert '<li class="bad"><b>IO List 有、BOM 找不到</b>（1）' in page
     assert '<li class="ok"><b>重複的 PLC 位址</b>（0）' in page
+
+
+def _report_with_io_tags(*tags: str) -> str:
+    """IO 表加上指定的（惡意）tag，BOM 都找不到，回傳 Markdown 報告。"""
+    io = load("io_clean.csv")
+    for i, t in enumerate(tags):
+        io.append(row(str(20 + i), t, "X", module="9"))
+    return ck.format_report(ck.check(io, load("bom_clean.csv")))
+
+
+def _section_of(page: str, label: str) -> str:
+    """取出卡片中某個 <li> 項目的整段 HTML（以標籤文字定位）。"""
+    import re
+
+    m = re.search(rf'<li[^>]*><b>{re.escape(label)}</b>.*?</li>', page, re.S)
+    assert m, label
+    return m.group(0)
+
+
+def test_newline_in_tag_cannot_forge_report_structure():
+    """tag 內含換行加「### 資訊」：不得拆出偽造的標題，也不得讓後面的「需要處理」失去標紅。"""
+    evil = "ZZ-C999\n### 資訊\nfoo\x0b- **IO List 有、BOM 找不到**（0）：無 bar"
+    md = _report_with_io_tags(evil, "ZZ-C998")
+    assert sum(1 for ln in md.splitlines() if ln.startswith("### ")) == 2  # 行首標題只有固定的兩個
+    page = ck.report_to_html(md)
+    assert page.count("<h3>") == 2
+    # 命名不符、BOM 找不到都有發現（>0），必須仍是紅色
+    assert _section_of(page, "IO List 有、BOM 找不到").startswith('<li class="bad">')
+    assert _section_of(page, "不符命名規則").startswith('<li class="bad">')
+    # 偽造的「（0）：無」項目不能出現成獨立的 <li>
+    assert page.count("<b>IO List 有、BOM 找不到</b>") == 1
+
+
+def test_markdown_chars_in_tag_do_not_misalign_code_and_bold():
+    md = _report_with_io_tags("A`B-C1", "D**E-C2")
+    page = ck.report_to_html(md)
+    assert page.count("<code>") == page.count("</code>")
+    assert page.count("<b>") == page.count("</b>")
+    assert "A'B-C1" in md and "D＊＊E-C2" in md
+
+
+def test_html_special_chars_in_tag_are_escaped():
+    md = _report_with_io_tags('X&Y-C1', 'P>Q-C2', '<i>Z-C3')
+    page = ck.report_to_html(md)
+    assert "X&amp;Y-C1" in page and "P&gt;Q-C2" in page and "&lt;i&gt;Z-C3" in page
+    assert "<i>" not in page
+
+
+def test_info_section_counts_are_never_red():
+    page = ck.report_to_html(_report_with_io_tags("ZZ-C777"))
+    for label in ("BOM 有、IO List 沒參照", "IO 描述提到、但 BOM 沒有的 tag", "同一設備寫法不一"):
+        assert _section_of(page, label).startswith("<li>"), label
+
+
+def test_height_script_is_exactly_the_allowed_one():
+    """白名單：卡片內的 script 必須與 HEIGHT_SCRIPT 完全相同，且只送 type 與 height 兩個欄位。"""
+    page = ck.report_to_html(_report_with_io_tags("ZZ-C777"))
+    assert page.lower().count("<script") == 1 and page.count(ck.HEIGHT_SCRIPT) == 1
+    assert "postMessage({type:'iframe:height',height:document.documentElement.scrollHeight}" in ck.HEIGHT_SCRIPT
+    assert ck.HEIGHT_SCRIPT.count("postMessage(") == 1
+
+
+def test_filename_is_cleaned_in_clean_text():
+    assert ck.clean_text("a\nb\x0bc d`e**f") == "a b c d'e＝＝f".replace("＝", "＊")
+
+
+def test_html_tags_are_balanced():
+    page = ck.report_to_html(_report_with_io_tags("ZZ-C777"))
+    for tag in ("ul", "li", "h2", "h3", "p", "div", "code", "b"):
+        assert page.count(f"<{tag}>") + page.count(f"<{tag} ") == page.count(f"</{tag}>"), tag

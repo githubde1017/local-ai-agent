@@ -73,7 +73,7 @@ class Tools:
         files = self._paths(__files__)
         if len(files) != 2:
             return "請在同一則訊息附上兩個不同的檔案：IO List 與 BOM（csv 或 xlsx）。目前找到：" + (
-                "、".join(n for n, _ in files) or "沒有可讀的附件"
+                "、".join(clean_text(n) for n, _ in files) or "沒有可讀的附件"
             )
         tables = [(n, load_rows(p)) for n, p in files]
         is_io = [bool(rows) and all(c in rows[0] for c in cfg.io_addr_cols) for _, rows in tables]
@@ -89,8 +89,11 @@ class Tools:
         try:
             report = format_report(check(io_rows, bom_rows, cfg))
         except InputError as e:
-            return f"無法檢查：{e}（可在 Tool 設定調整欄位名稱）"
-        text = f"IO List：`{io_name}`（{len(io_rows)} 列）｜BOM：`{bom_name}`（{len(bom_rows)} 列）\n\n" + report
+            return f"無法檢查：{clean_text(e)}（可在 Tool 設定調整欄位名稱）"
+        text = (
+            f"IO List：`{clean_text(io_name)}`（{len(io_rows)} 列）｜BOM：`{clean_text(bom_name)}`（{len(bom_rows)} 列）\n\n"
+            + report
+        )
         if not self.valves.show_report_card:
             return text
         try:
