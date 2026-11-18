@@ -88,6 +88,9 @@ WARNI [open_webui.env]
 
 WARNING: CORS_ALLOW_ORIGIN IS SET TO '*' - NOT RECOMMENDED FOR PRODUCTION DEPLOYMENTS.
 
+PASS 成功時回傳 inline HTMLResponse 卡片＋文字
+PASS 卡片含完整「需要處理」6 項，只有回報高度的 script
+PASS 關閉 show_report_card 時只回傳文字
 PASS 公開資料 csv 產生報告
 PASS xlsx（BOM 放第一個）與 csv 結果相同
 PASS SCBR-C6701.CMDRUN 列為 BOM 找不到（同迴路錯配已修）
@@ -97,6 +100,8 @@ PASS 兩個都是 BOM 會提示
 PASS 上傳目錄以外的路徑被拒
 PASS 欄位名稱錯誤回傳說明而不是乾淨結果
 PASS 乾淨 fixture 零發現
+
+【完整報告已以卡片顯示給使用者，不要逐條重抄】請用 2～4 句繁體中文摘要：需要處理的項目各有幾筆、最值得先查的是哪些，並提醒資訊類需人工判斷。以下是同一份報告：
 
 IO List：`io_list.csv`（305 列）｜BOM：`equipment_list.csv`（225 列）
 
@@ -112,4 +117,4 @@ IO List：`io_list.csv`（305 列）｜BOM：`equipment_list.csv`（225 列）
 - **空白或大小寫問題**（0）：無
 
 
-9/9 通過
+12/12 通過

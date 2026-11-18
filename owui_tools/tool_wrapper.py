@@ -18,6 +18,9 @@ class Tools:
         bom_tagged_col: str = Field("tagged", description="標示是否有 tag 的欄位（值為 N 的列略過）；不用就留空")
         spare_values: str = Field("SPARE", description="備用點的 tag 值（逗號分隔）")
         tag_pattern: str = Field(DEFAULT_TAG_PATTERN, description="tag 命名規則（正規表示式）")
+        show_report_card: bool = Field(
+            True, description="把完整報告以卡片直接顯示在回覆中（模型只負責摘要）；關閉則只回傳文字給模型"
+        )
 
     def __init__(self):
         self.valves = self.Valves()
@@ -60,10 +63,11 @@ class Tools:
                 out.append((name, real))
         return out
 
-    def check_io_bom(self, __files__: Optional[list] = None) -> str:
+    def check_io_bom(self, __files__: Optional[list] = None):
         """
-        交叉檢查對話中附上的 IO List 與 BOM（設備清單）。附件需為 csv 或 xlsx，兩個檔案各一。
-        會自動以欄位判斷哪個是 IO List（含 PLC 位址欄位者）。回傳 Markdown 檢查報告。
+        交叉檢查對話中附上的 IO List 與 BOM（設備清單）。附件需為 csv 或 xlsx，兩個檔案各一，
+        由工具自動讀取，不需要任何參數。會自動以欄位判斷哪個是 IO List（含 PLC 位址欄位者）。
+        成功時完整報告會直接顯示給使用者，回傳給你的是同一份報告供摘要。
         """
         cfg = self._cfg()
         files = self._paths(__files__)
@@ -86,4 +90,16 @@ class Tools:
             report = format_report(check(io_rows, bom_rows, cfg))
         except InputError as e:
             return f"無法檢查：{e}（可在 Tool 設定調整欄位名稱）"
-        return f"IO List：`{io_name}`（{len(io_rows)} 列）｜BOM：`{bom_name}`（{len(bom_rows)} 列）\n\n" + report
+        text = f"IO List：`{io_name}`（{len(io_rows)} 列）｜BOM：`{bom_name}`（{len(bom_rows)} 列）\n\n" + report
+        if not self.valves.show_report_card:
+            return text
+        try:
+            from fastapi.responses import HTMLResponse
+        except ImportError:  # 不在 Open WebUI 內（本機測試）
+            return text
+        card = HTMLResponse(report_to_html(text), headers={"Content-Disposition": "inline"})
+        note = (
+            "【完整報告已以卡片顯示給使用者，不要逐條重抄】請用 2～4 句繁體中文摘要：需要處理的項目各有幾筆、"
+            "最值得先查的是哪些，並提醒資訊類需人工判斷。以下是同一份報告：\n\n"
+        )
+        return card, note + text

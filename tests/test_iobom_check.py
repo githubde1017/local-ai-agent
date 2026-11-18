@@ -153,3 +153,37 @@ def test_ambiguous_loop_resolved_by_description():
     assert r.matched["AAH-C6903-1"] == ("AIT-C6903-1", "描述指名")
     assert "YA-C6903-1" in r.io_unmatched  # 描述沒指名迴路內任何一台
     assert "AIT-C6903-2" in r.desc_tags_not_in_bom
+
+
+def _injected_report() -> str:
+    io = load("io_clean.csv")
+    io.append(row("15", "XV-C9999.ZSO", "VALVE XV-C9999 <OPEN> & CLOSED"))  # BOM 找不到，描述含 HTML 字元
+    return ck.format_report(ck.check(io, load("bom_clean.csv")))
+
+
+def test_html_card_keeps_every_report_line():
+    """卡片不能漏任何一行：去掉標籤、還原跳脫後，每個非空行的文字都在。"""
+    import html
+    import re
+
+    md = _injected_report()
+    page = ck.report_to_html(md)
+    text = html.unescape(re.sub(r"<[^>]+>", "", page))
+    for line in md.splitlines():
+        plain = re.sub(r"^#+ |^- ", "", line).replace("**", "").replace("`", "").strip()
+        if plain:
+            assert plain in text, plain
+
+
+def test_html_card_escapes_and_has_no_script():
+    page = ck.report_to_html(_injected_report())
+    # 唯一允許的腳本是回報高度那段，且不得連網或讀取資料
+    assert page.lower().count("<script") == 1 and ck.HEIGHT_SCRIPT in page
+    assert not any(k in ck.HEIGHT_SCRIPT for k in ("fetch", "XMLHttpRequest", "WebSocket", "cookie", "localStorage", "import"))
+    assert ck.report_to_html("- **x**（1）：`<b>壞</b>`").count("<b>壞</b>") == 0
+
+
+def test_html_card_marks_nonzero_findings():
+    page = ck.report_to_html(_injected_report())
+    assert '<li class="bad"><b>IO List 有、BOM 找不到</b>（1）' in page
+    assert '<li class="ok"><b>重複的 PLC 位址</b>（0）' in page

@@ -56,21 +56,44 @@ bom_csv = upload("/corpus/equipment_list.csv", "equipment_list.csv")
 io_x = upload("/corpus/io_list.csv", "IO清單.xlsx")
 bom_x = upload("/corpus/equipment_list.csv", "設備清單.xlsx")
 
-csv_out = T.check_io_bom(__files__=[io_csv, bom_csv])
-x_out = T.check_io_bom(__files__=[bom_x, io_x])
-body = lambda s: s.split("\n", 2)[2]  # noqa: E731
+from fastapi.responses import HTMLResponse  # noqa: E402
+
+
+def run(files):
+    """成功時 Tool 回傳 (HTMLResponse 卡片, 給模型的文字)；錯誤時回傳文字。這裡統一取文字。"""
+    out = T.check_io_bom(__files__=files)
+    return out[1] if isinstance(out, tuple) else out
+
+
+raw = T.check_io_bom(__files__=[io_csv, bom_csv])
+card_ok = (
+    isinstance(raw, tuple) and isinstance(raw[0], HTMLResponse)
+    and "inline" in raw[0].headers.get("content-disposition", "")
+)
+ok("成功時回傳 inline HTMLResponse 卡片＋文字", card_ok)
+card_html = raw[0].body.decode("utf-8") if card_ok else ""
+ok("卡片含完整「需要處理」6 項，只有回報高度的 script",
+   all(k in card_html for k in ("BOM 找不到", "描述的設備編號不一致", "重複的 IO tag", "重複的 PLC 位址", "不符命名規則", "空白或大小寫"))
+   and card_html.lower().count("<script") == 1 and "iframe:height" in card_html)
+T.valves.show_report_card = False
+ok("關閉 show_report_card 時只回傳文字", isinstance(T.check_io_bom(__files__=[io_csv, bom_csv]), str))
+T.valves.show_report_card = True
+
+csv_out = run([io_csv, bom_csv])
+x_out = run([bom_x, io_x])
+body = lambda s: s.split("IO List：", 1)[1].split("\n", 2)[2]  # noqa: E731
 ok("公開資料 csv 產生報告", "## IO List × BOM 交叉檢查" in csv_out)
 ok("xlsx（BOM 放第一個）與 csv 結果相同", body(csv_out) == body(x_out))
 ok("SCBR-C6701.CMDRUN 列為 BOM 找不到（同迴路錯配已修）", "SCBR-C6701.CMDRUN" in csv_out.split("### 資訊")[0])
-ok("只附一個檔會提示", "請在同一則訊息附上兩個不同的檔案" in T.check_io_bom(__files__=[io_csv]))
-ok("同一個檔附兩次會提示", "請在同一則訊息附上兩個不同的檔案" in T.check_io_bom(__files__=[io_csv, io_csv]))
-ok("兩個都是 BOM 會提示", "無法判斷哪個是 IO List" in T.check_io_bom(__files__=[bom_csv, bom_x]))
+ok("只附一個檔會提示", "請在同一則訊息附上兩個不同的檔案" in run([io_csv]))
+ok("同一個檔附兩次會提示", "請在同一則訊息附上兩個不同的檔案" in run([io_csv, io_csv]))
+ok("兩個都是 BOM 會提示", "無法判斷哪個是 IO List" in run([bom_csv, bom_x]))
 outside = {"type": "file", "file": {"path": "/fx/io_clean.csv", "filename": "io_clean.csv"}}
-ok("上傳目錄以外的路徑被拒", "目前找到：io_list.csv" in T.check_io_bom(__files__=[io_csv, outside]))
+ok("上傳目錄以外的路徑被拒", "目前找到：io_list.csv" in run([io_csv, outside]))
 T.valves.io_tag_col = "Tag"
-ok("欄位名稱錯誤回傳說明而不是乾淨結果", "找不到欄位「Tag」" in T.check_io_bom(__files__=[io_csv, bom_csv]))
+ok("欄位名稱錯誤回傳說明而不是乾淨結果", "找不到欄位「Tag」" in run([io_csv, bom_csv]))
 T.valves.io_tag_col = "tag"
-clean = T.check_io_bom(__files__=[upload("/fx/io_clean.csv", "io_clean.csv"), upload("/fx/bom_clean.csv", "bom_clean.csv")])
+clean = run([upload("/fx/io_clean.csv", "io_clean.csv"), upload("/fx/bom_clean.csv", "bom_clean.csv")])
 ok("乾淨 fixture 零發現", clean.split("### 資訊")[0].count("（0）") == 6)
 print()
 print(csv_out.split("### 資訊")[0])

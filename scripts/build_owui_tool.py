@@ -16,7 +16,7 @@ OUT = ROOT / "owui_tools" / "dist" / "iobom_check_tool.py"
 HEADER = '''"""
 title: IO List × BOM 交叉檢查
 author: local-ai-agent
-version: 0.1.0
+version: 0.2.0
 requirements: openpyxl
 description: 交叉檢查附件中的 IO List 與 BOM（設備清單）：缺漏、重複 tag／位址、命名、空白大小寫、tag 與描述不一致。全部在本機執行。
 """

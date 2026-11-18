@@ -326,6 +326,74 @@ def format_report(r: Result, top: int = 30) -> str:
     return "\n".join(lines)
 
 
+_CARD_CSS = """
+:root{--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d1d9e0;--bad:#b42318;--bad-bg:#fef3f2;--ok:#1a7f37;--code:#f6f8fa}
+@media (prefers-color-scheme:dark){:root{--bg:#171717;--fg:#e6e6e6;--muted:#a0a0a0;--line:#333;--bad:#ff8a80;--bad-bg:#2a1717;--ok:#7ee2a0;--code:#262626}}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.6 system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+.card{padding:12px 16px}
+h2{font-size:16px;margin:0 0 6px}h3{font-size:14px;margin:14px 0 4px;color:var(--muted)}
+ul{margin:0;padding-left:18px}li{margin:3px 0;overflow-wrap:anywhere}
+li.bad{background:var(--bad-bg);border-left:3px solid var(--bad);list-style:none;margin-left:-18px;padding:2px 8px}
+li.ok{color:var(--muted)}
+code{background:var(--code);border-radius:4px;padding:0 4px;font-size:12.5px}
+p{margin:6px 0;color:var(--muted);font-size:13px}
+"""
+
+
+# Open WebUI 的嵌入框沒有同源權限，無法自己量高度；卡片用 postMessage 回報高度，框才會依內容展開。
+# 重新載入對話時，卡片可能在父頁面掛上監聽器之前就載入完成，所以前 3 秒內重送幾次，
+# 收到父頁面的訊息時也再回報一次。這是卡片中唯一的腳本：不連網、不讀取資料。
+HEIGHT_SCRIPT = (
+    "<script>(function(){function s(){parent.postMessage({type:'iframe:height',"
+    "height:document.documentElement.scrollHeight},'*')}addEventListener('load',s);"
+    "addEventListener('message',s);[100,300,800,1500,3000].forEach(function(t){setTimeout(s,t)});"
+    "if(window.ResizeObserver){new ResizeObserver(s).observe(document.body)}})()</script>"
+)
+
+
+def report_to_html(report: str) -> str:
+    """把 format_report 的 Markdown 轉成獨立 HTML 卡片（只含回報高度的腳本 HEIGHT_SCRIPT）。
+    「需要處理」中數量大於 0 的項目標紅、等於 0 的淡化，其餘文字原樣保留（已跳脫）。"""
+    import html as _html
+
+    def inline(s: str) -> str:
+        s = _html.escape(s, quote=False)
+        s = re.sub(r"`([^`]*)`", r"<code>\1</code>", s)
+        return re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", s)
+
+    out, in_list, section = [], False, ""
+    for line in report.splitlines():
+        if line.startswith("- "):
+            if not in_list:
+                out.append("<ul>")
+                in_list = True
+            cls = ""
+            if section == "需要處理":
+                m = re.search(r"\*\*（(\d+)）", line)
+                if m:
+                    cls = ' class="bad"' if int(m.group(1)) else ' class="ok"'
+            out.append(f"<li{cls}>{inline(line[2:])}</li>")
+            continue
+        if in_list:
+            out.append("</ul>")
+            in_list = False
+        if line.startswith("### "):
+            section = line[4:].split("（")[0]
+            out.append(f"<h3>{inline(line[4:])}</h3>")
+        elif line.startswith("## "):
+            out.append(f"<h2>{inline(line[3:])}</h2>")
+        elif line.strip():
+            out.append(f"<p>{inline(line)}</p>")
+    if in_list:
+        out.append("</ul>")
+    return (
+        '<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        f"<style>{_CARD_CSS}</style></head><body><div class=\"card\">" + "\n".join(out) + "</div>"
+        + HEIGHT_SCRIPT + "</body></html>"
+    )
+
+
 if __name__ == "__main__":
     import sys
 
