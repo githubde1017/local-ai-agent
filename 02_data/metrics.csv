@@ -1,0 +1,9 @@
+date,commit,metric,value,command
+2026-11-18,c9fd3f4,iobom_pytest_passed,11,py -3.10 -m pytest -q tests
+2026-11-18,c9fd3f4,iobom_injected_error_types_caught,7,py -3.10 -m pytest -q tests
+2026-11-18,c9fd3f4,eval_public_draft_questions,30,scripts/make_eval_public_415.py
+2026-11-18,c9fd3f4,owui_runtime_check_passed,9,scripts/owui_runtime_check.py
+2026-11-18,c9fd3f4,public_io_unmatched,7,scripts/owui_runtime_check.py
+2026-11-19,2e8b867,iobom_pytest_passed,21,py -3.10 -m pytest -q tests
+2026-11-19,2e8b867,owui_runtime_check_passed_v0134,13,scripts/owui_runtime_check.py
+2026-11-19,2e8b867,card_height_after_reload_px,814,02_data/owui_card_check_20261119.txt

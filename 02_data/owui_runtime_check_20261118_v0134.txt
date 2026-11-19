@@ -1,0 +1,121 @@
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 7e5b5dc7342b
+INFO  [alembic.runtime.migration] Running upgrade 7e5b5dc7342b -> ca81bd47c050, Add config table.
+INFO  [alembic.runtime.migration] Running upgrade ca81bd47c050 -> c0fbf31ca0db, Update file table
+INFO  [alembic.runtime.migration] Running upgrade c0fbf31ca0db -> 6a39f3d8e55c, Add knowledge table
+Creating knowledge table
+Migrating data from document table to knowledge table
+INFO  [alembic.runtime.migration] Running upgrade 6a39f3d8e55c -> 242a2047eae0, Update chat table
+Converting 'chat' column to JSON
+Renaming 'chat' column to 'old_chat'
+Adding new 'chat' column of type JSON
+Dropping 'old_chat' column
+INFO  [alembic.runtime.migration] Running upgrade 242a2047eae0 -> 1af9b942657b, Migrate tags
+INFO  [alembic.runtime.migration] Running upgrade 1af9b942657b -> 3ab32c4b8f59, Update tags
+Primary Key: {'constrained_columns': ['id'], 'name': None}
+Unique Constraints: [{'name': 'uq_id_user_id', 'column_names': ['id', 'user_id']}]
+Indexes: []
+Creating new primary key with 'id' and 'user_id'.
+Dropping unique constraint: uq_id_user_id
+INFO  [alembic.runtime.migration] Running upgrade 3ab32c4b8f59 -> c69f45358db4, Add folder table
+INFO  [alembic.runtime.migration] Running upgrade c69f45358db4 -> c29facfe716b, Update file table path
+INFO  [alembic.runtime.migration] Running upgrade c29facfe716b -> af906e964978, Add feedback table
+INFO  [alembic.runtime.migration] Running upgrade af906e964978 -> 4ace53fd72c8, Update folder table and change DateTime to BigInteger for timestamp fields
+INFO  [alembic.runtime.migration] Running upgrade 4ace53fd72c8 -> 922e7a387820, Add group table
+INFO  [alembic.runtime.migration] Running upgrade 922e7a387820 -> 57c599a3cb57, Add channel table
+INFO  [alembic.runtime.migration] Running upgrade 57c599a3cb57 -> 7826ab40b532, Update file table
+INFO  [alembic.runtime.migration] Running upgrade 7826ab40b532 -> 3781e22d8b01, Update message & channel tables
+INFO  [alembic.runtime.migration] Running upgrade 3781e22d8b01 -> 9f0c9cd09105, Add note table
+INFO  [alembic.runtime.migration] Running upgrade 9f0c9cd09105 -> d31026856c01, Update folder table data
+INFO  [alembic.runtime.migration] Running upgrade d31026856c01 -> 018012973d35, Add indexes
+INFO  [alembic.runtime.migration] Running upgrade 018012973d35 -> 3af16a1c9fb6, update user table
+INFO  [alembic.runtime.migration] Running upgrade 3af16a1c9fb6 -> 38d63c18f30f, Add oauth_session table
+INFO  [alembic.runtime.migration] Running upgrade 38d63c18f30f -> a5c220713937, Add reply_to_id column to message
+INFO  [alembic.runtime.migration] Running upgrade a5c220713937 -> 37f288994c47, add_group_member_table
+[]
+INFO  [alembic.runtime.migration] Running upgrade 37f288994c47 -> 2f1211949ecc, Update messages and channel member table
+INFO  [alembic.runtime.migration] Running upgrade 2f1211949ecc -> b10670c03dd5, Update user table
+INFO  [alembic.runtime.migration] Running upgrade b10670c03dd5 -> 90ef40d4714e, Update channel and channel members table
+INFO  [alembic.runtime.migration] Running upgrade 90ef40d4714e -> 3e0e00844bb0, Add knowledge_file table
+INFO  [alembic.runtime.migration] Running upgrade 3e0e00844bb0 -> 6283dc0e4d8d, Add channel file table
+INFO  [alembic.runtime.migration] Running upgrade 6283dc0e4d8d -> 81cc2ce44d79, Update channel file and knowledge table
+INFO  [alembic.runtime.migration] Running upgrade 81cc2ce44d79 -> c440947495f3, Add chat_file table
+INFO  [alembic.runtime.migration] Running upgrade c440947495f3 -> 374d2f66af06, Add prompt history table
+INFO  [alembic.runtime.migration] Running upgrade 374d2f66af06 -> 8452d01d26d7, Add chat_message table
+INFO  [alembic.runtime.migration] Running upgrade 8452d01d26d7 -> f1e2d3c4b5a6, Add access_grant table
+INFO  [alembic.runtime.migration] Running upgrade f1e2d3c4b5a6 -> a1b2c3d4e5f6, Add skill table
+INFO  [alembic.runtime.migration] Running upgrade a1b2c3d4e5f6 -> b2c3d4e5f6a7, add scim column to user table
+INFO  [alembic.runtime.migration] Running upgrade b2c3d4e5f6a7 -> a3dd5bedd151, Add tasks and summary columns to chat table
+INFO  [alembic.runtime.migration] Running upgrade a3dd5bedd151 -> d4e5f6a7b8c9, add automation tables
+INFO  [alembic.runtime.migration] Running upgrade d4e5f6a7b8c9 -> b7c8d9e0f1a2, add last_read_at to chat
+INFO  [alembic.runtime.migration] Running upgrade b7c8d9e0f1a2 -> e1f2a3b4c5d6, Add is_pinned to note table
+INFO  [alembic.runtime.migration] Running upgrade e1f2a3b4c5d6 -> c1d2e3f4a5b6, Add shared_chat table and migrate existing shares
+INFO  [alembic.runtime.migration] Running upgrade c1d2e3f4a5b6 -> 56359461a091, add calendar tables
+INFO  [alembic.runtime.migration] Running upgrade 56359461a091 -> 4de81c2a3af1, add pinned_note table
+INFO  [alembic.runtime.migration] Running upgrade 4de81c2a3af1 -> a0b1c2d3e4f5, Add memory user_id index
+INFO  [alembic.runtime.migration] Running upgrade a0b1c2d3e4f5 -> 3c9b0ca343fd, add knowledge_directory table
+INFO  [alembic.runtime.migration] Running upgrade 3c9b0ca343fd -> 461111b60977, add missing primary keys to legacy peewee tables
+INFO  [alembic.runtime.migration] Running upgrade 461111b60977 -> 3ff2c63645b8, reshape config to per key rows
+INFO  [alembic.runtime.migration] Running upgrade 3ff2c63645b8 -> 4c5ce3d2f27f, add context summary to chat message
+INFO  [alembic.runtime.migration] Running upgrade 4c5ce3d2f27f -> 7b3f2a9c1d4e, add memory type
+INFO  [alembic.runtime.migration] Running upgrade 7b3f2a9c1d4e -> 42e2978c7933, add memory path and meta
+INFO  [alembic.runtime.migration] Running upgrade 42e2978c7933 -> 856c5b02fb54, add chat message meta
+INFO  [alembic.runtime.migration] Running upgrade 856c5b02fb54 -> 9a1b2c3d4e5f, add current_message_id to chat
+INFO  [alembic.runtime.migration] Running upgrade 9a1b2c3d4e5f -> c49178636c78, add chat variables
+INFO  [alembic.runtime.migration] Running upgrade c49178636c78 -> b0018471bbbe, add user variables
+INFO  [alembic.runtime.migration] Running upgrade b0018471bbbe -> 55f1302ac17c, Add memory (id, user_id) covering index
+INFO  [alembic.runtime.migration] Running upgrade 55f1302ac17c -> 959eaac8f909, add automation folder id
+INFO  [alembic.runtime.migration] Running upgrade 959eaac8f909 -> f0bd01a18a3d, add unique normalized user email index
+INFO  [alembic.runtime.migration] Running upgrade f0bd01a18a3d -> 1ce6ade7d93b, Add group_member user_id index
+INFO  [alembic.runtime.migration] Running upgrade 1ce6ade7d93b -> 6d09d1bf1f23, repair double encoded user oauth
+INFO  [alembic.runtime.migration] Running upgrade 6d09d1bf1f23 -> d4c1a8e37b62, add chat timer_at and chat list, unread and timer indexes
+INFO  [alembic.runtime.migration] Running upgrade d4c1a8e37b62 -> a7d3e9f2b641, add MFA state and account session stamps
+INFO  [alembic.runtime.migration] Running upgrade a7d3e9f2b641 -> b8e4f0a3c752, Add single-parent group hierarchy.
+INFO  [alembic.runtime.migration] Running upgrade b8e4f0a3c752 -> d6a8c3f912ab, Add immutable multi-file skill snapshots, preserving existing instruction bytes.
+INFO  [alembic.runtime.migration] Running upgrade d6a8c3f912ab -> e7b9d4a023bc, Add model configuration history and initialize Production versions.
+INFO  [alembic.runtime.migration] Running upgrade e7b9d4a023bc -> f8c0e5b134cd, Add Tool and Function history without executing or rewriting plugin source.
+INFO  [alembic.runtime.migration] Running upgrade f8c0e5b134cd -> b8f2c6d91a04, Add a PostgreSQL index for pending knowledge files.
+INFO  [alembic.runtime.migration] Running upgrade b8f2c6d91a04 -> c92da83b017f, Add apps.
+INFO  [alembic.runtime.migration] Running upgrade c92da83b017f -> 0bd252b206fb, add missing auth rows
+INFO  [alembic.runtime.migration] Running upgrade 0bd252b206fb -> c41f8d9e2a10, Add resource comments and reactions.
+INFO  [alembic.runtime.migration] Running upgrade c41f8d9e2a10 -> 6f8c2a91d4e7, Add a persistent enabled state to tools.
+INFO  [alembic.runtime.migration] Running upgrade 6f8c2a91d4e7 -> e42c8f710a36, Add persistent general inbox notifications.
+INFO  [alembic.runtime.migration] Running upgrade e42c8f710a36 -> 8bc7e5a902d1, Add renewable authentication sessions.
+INFO  [alembic.runtime.migration] Running upgrade 8bc7e5a902d1 -> 6a23bd107e54, Add private per-user chat working views.
+INFO  [alembic.runtime.migration] Running upgrade 6a23bd107e54 -> 9f6c2a8d1b43, Add indexes for channel message and reaction lookups.
+WARNI [open_webui.env] 
+
+WARNING: CORS_ALLOW_ORIGIN IS SET TO '*' - NOT RECOMMENDED FOR PRODUCTION DEPLOYMENTS.
+
+PASS 成功時回傳 inline HTMLResponse 卡片＋文字
+PASS 卡片含完整「需要處理」6 項，只有回報高度的 script
+PASS 關閉 show_report_card 時只回傳文字
+PASS 公開資料 csv 產生報告
+PASS xlsx（BOM 放第一個）與 csv 結果相同
+PASS SCBR-C6701.CMDRUN 列為 BOM 找不到（同迴路錯配已修）
+PASS 只附一個檔會提示
+PASS 同一個檔附兩次會提示
+PASS 兩個都是 BOM 會提示
+PASS 上傳目錄以外的路徑被拒
+PASS 欄位名稱錯誤回傳說明而不是乾淨結果
+PASS 乾淨 fixture 零發現
+PASS 惡意 tag／檔名不會偽造卡片標題，且有發現的項目仍標紅
+
+【完整報告已以卡片顯示給使用者，不要逐條重抄】請用 2～4 句繁體中文摘要：需要處理的項目各有幾筆、最值得先查的是哪些，並提醒資訊類需人工判斷。以下是同一份報告：
+
+IO List：`io_list.csv`（305 列）｜BOM：`equipment_list.csv`（225 列）
+
+## IO List × BOM 交叉檢查
+- IO 點（不含 SPARE）：186；BOM 有 tag 的品項：205；不重複 IO tag 中對到 BOM 的：73／80
+
+### 需要處理
+- **IO List 有、BOM 找不到**（7）：`HS-C6001_2`、`CP-M826.UPS01`、`SCBR-C6701.CMDRUN`、`XV-X6111.CMDOPN`、`CP-C827.UPS01`、`ZSC-M9001`、`ZSC-M9002`
+- **tag 與描述的設備編號不一致**（10）：`Maclean:EF-C640.Flt ↔ 描述寫 EF-C641`、`Maclean:XV-C6401.ZSC ↔ 描述寫 XV-C6011`、`Maclean:HS-C6001_2 ↔ 描述寫 HS-C6001、HS-C6002`、`Maclean:SCBR-C6701.CmdRun ↔ 描述寫 SCBR-C670`、`Maclean:XV-X6111.CmdOpn ↔ 描述寫 XV-C6111`、`McPhillips:EF-C640.Flt ↔ 描述寫 EF-C641`、`McPhillips:XV-C6401.ZSC ↔ 描述寫 XV-C6011`、`McPhillips:AHU-C602.CmdRun ↔ 描述寫 AHU-C601`、`Hurst:EF-C640.Flt ↔ 描述寫 EF-C641`、`Hurst:XV-C6401.ZSC ↔ 描述寫 XV-C6011`
+- **重複的 IO tag**（1）：`Hurst:CP-C827.UPS01×2`
+- **重複的 PLC 位址**（0）：無
+- **不符命名規則**（1）：`HS-C6001_2`
+- **空白或大小寫問題**（0）：無
+
+
+13/13 通過

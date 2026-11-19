@@ -1,0 +1,31 @@
+IO/BOM Tool 0.2.0 卡片：對話實測與高度量測（Open WebUI 0.13.4，2026-11-19）
+說明：以下數值是當次在內建瀏覽器用 javascript 實際量到並讀回的結果（chat API 與 DOM），整理成文字存證；
+沒有截圖檔。對話為正式環境測試對話，內容為公開語料，可由使用者刪除。
+
+[1] 對話 896df8b5-afda-461a-adf2-8ac4d6664cbb（全新對話，模型 iobom-assistant，附 io_list.csv、equipment_list.csv，
+    問「幫我交叉檢查這兩個檔案：IO List 和設備清單，列出缺漏與不一致的地方。」）
+    assistant output 型別序列：function_call:check_io_bom → function_call_output → message
+    function_call 參數：{}
+    模型摘要（message）：「根據報告，IO List 中有7個 IO 點在 BOM 中找不到對應項目…另外，有10個 tag 與設備編號不一致…
+    資訊類項目共計62筆…報告中提到的 IO 描述中有5個在 BOM 中沒有對應項目」→ 數字 7／10／62／5 與 Tool 報告一致
+
+[2] 卡片 iframe（同一對話，重新載入頁面並等 6 秒後量測）
+    iframe 數量 1；style.height = 677px；srcdoc 含「[100,300」（第二版回報高度程式）= true
+    iframe sandbox = allow-scripts allow-popups allow-downloads（未含 allow-same-origin）
+
+[3] 第一版（只在 load 時回報一次）對照：對話 5b08155f-4878-48eb-96bb-43006010fd08
+    新送出時 677px；重新載入後新卡片 style.height = 0px（卡片在父頁面掛上監聽前就已回報）
+    手動重設 srcdoc 後，父頁面收到 {"type":"iframe:height","height":677}，高度恢復 677px
+    → 改為前 3 秒重送 5 次並在收到訊息時回報（第二版），[2] 為修正後結果
+
+[4] 版本相容
+    Open WebUI 0.10.2（digest a26effeb…）與 0.13.4（digest d5168bfb…）的 utils/middleware.py 都有
+    「tool_result 為 (HTMLResponse, context) tuple 時解包」的處理（0.10.2 第 833 行起）。
+    未實測 0.10.2 的對話顯示；僅確認原始碼。
+
+[5] 審查修正後重新安裝（Tool 0.2.0，dist sha256 前 16 碼 9827bdf48c4c8f31），新對話 35a13294-aef2-4514-a5b1-9a9d8afdcf01
+    output 型別序列：function_call:check_io_bom → function_call_output → message
+    Tool 輸出含「（7）」「（10）」「（1）」「73／80」，「需要處理」6 項，與先前相同
+    重新載入後卡片：iframe 1 個，style.height = 814px（視窗寬度與先前不同，故與 677px 不同），<h3> 2 個，標紅項目 4 個
+    模型摘要原文：「根據報告，IO List 共有 7 個 IO 點與 BOM 不一致，其中 10 個 tag 與描述的設備編號不符。…」
+    → 措辭不精準（把「找不到」說成「不一致」），數字正確；完整內容以卡片為準

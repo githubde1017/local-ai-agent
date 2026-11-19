@@ -1,0 +1,3 @@
+# 開發機用（測試與命令列跑 xlsx）；Open WebUI 映像內已內建 openpyxl
+pytest>=8
+openpyxl>=3.1
