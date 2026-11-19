@@ -39,6 +39,9 @@ services:
     # 要升級時先停容器、備份 webui.db 與 uploads、vector_db，再改這一行。
     image: ghcr.io/open-webui/open-webui@sha256:d5168bfbc28609eff5bea1b438dd864cf64d185cf6582c02244865e18385b901
     container_name: open-webui
+    # 以 tini 當 PID 1，收掉殭屍程序並轉送停止訊號；避免 docker stop 卡住（2026-11-18 遇過）。
+    # 未驗證：套用後 docker stop 是否不再卡住，下次停容器時確認。
+    init: true
     ports:
       # 只綁本機，區網其他裝置連不到
       - "127.0.0.1:3000:8080"
