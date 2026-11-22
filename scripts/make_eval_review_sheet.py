@@ -1,6 +1,7 @@
 """把評測題草稿（jsonl）做成審查表（Markdown）：每題附出處頁的原文段落，審查者只需勾選。
 
-用法：py -3.10 -I scripts/make_eval_review_sheet.py <評測題 jsonl> <pdf_to_txt.py 的輸出資料夾> <輸出 .md>
+用法：py -3.10 -I scripts/make_eval_review_sheet.py <評測題 jsonl> <pdf_to_txt.py 的輸出資料夾> <輸出 .md> [題號清單]
+題號清單可選：逗號分隔的題號，或存有題號的檔案（scripts/owui_eval.py --triage-out 的輸出），只留這些題。
 
 自動檢查（任何一項失敗就列在審查表開頭，並以結束碼 1 結束；表仍會產生）：
   - source.pages 內每一頁都存在
@@ -47,8 +48,18 @@ def number_hints(points: list[str], page_text: str) -> str:
     return f"出處頁找得到：{', '.join(found) or '（無）'}｜找不到：{', '.join(miss) or '（無）'}（日期或換算過的數字找不到是正常的）"
 
 
-def main(jsonl: str, txt_dir: str, out: str) -> int:
+def main(jsonl: str, txt_dir: str, out: str, only: str | None = None) -> int:
     qs = [json.loads(x) for x in Path(jsonl).read_text(encoding="utf-8").splitlines() if x.strip()]
+    total = len(qs)
+    if only:
+        raw = Path(only).read_text(encoding="utf-8") if Path(only).is_file() else only
+        ids = {i for i in re.split(r"[,\s]+", raw) if i}
+        if not ids:
+            raise SystemExit("題號清單是空的，沒有題目需要審（或清單檔沒寫入）。")
+        unknown = ids - {x["id"] for x in qs}
+        if unknown:
+            raise SystemExit(f"題號不存在：{sorted(unknown)}")
+        qs = [x for x in qs if x["id"] in ids]
     cache: dict[str, dict[int, list[str]]] = {}
     problems, body = [], []
     for q in qs:
@@ -72,8 +83,13 @@ def main(jsonl: str, txt_dir: str, out: str) -> int:
             + "- 修改意見：\n\n---\n"
         )
     head = (
-        f"# 評測題審查表（{len(qs)} 題）\n\n來源：`{Path(jsonl).name}`。全部勾完、沒問題的題目，才把 jsonl 的 `reviewed` 改成 true。\n"
-        "審查表含公開語料原文片段，僅供本機審查，不進 git。\n\n"
+        f"# 評測題審查表（{len(qs)} 題）\n\n來源：`{Path(jsonl).name}`。"
+        + (
+            f"**這是子集（{len(qs)}/{total} 題），不能據此把整份標成 reviewed**；其餘題目尚未審查。\n"
+            if len(qs) < total
+            else "全部勾完、沒問題的題目，才把 jsonl 的 `reviewed` 改成 true。\n"
+        )
+        + "審查表含公開語料原文片段，僅供本機審查，不進 git。\n\n"
     )
     if problems:
         head += "## ⚠ 自動檢查失敗\n" + "".join(f"- {p}\n" for p in problems) + "\n---\n\n"
@@ -88,4 +104,4 @@ def main(jsonl: str, txt_dir: str, out: str) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(*sys.argv[1:4]))
+    raise SystemExit(main(*sys.argv[1:5]))

@@ -28,3 +28,7 @@ Thumbs.db
 corpus/
 owui_tools/dist/
 .pytest_cache/
+
+# 案場評測集含原文摘錄（anchor），不進 git
+03_docs/eval/site_*.jsonl
+_review/

@@ -152,6 +152,10 @@ py -3.10 scripts/owui_audit.py
 | `scripts/pdf_to_txt.py` | PDF 逐頁抽文字（映像內執行，用映像附帶的 pypdf） | Docker |
 | `scripts/winnipeg_pdf_to_csv.py` | 公開語料（溫尼伯 Tender 415-2025）的 IO／設備清單轉 csv | 無 |
 | `scripts/make_eval_public_415.py` | 由公開語料產生評測題草稿，頁碼以原文錨點定位 | 無 |
+| `scripts/make_eval_review_sheet.py` | 評測題審查表：每題附出處頁原文，自動檢查頁碼與錨點；第 4 個參數可只留指定題號（子集表頭會註明不能標整份 reviewed）。表含原文片段，輸出放 repo 外 | 無 |
+| `scripts/owui_eval.py` | 對知識庫逐題檢索，算 recall@k、MRR、延遲 p50/p95，頁碼 0／1 起算自動校準，列出需人審的題，指標追加到 `02_data/metrics.csv` | 環境變數 `OWUI_API_KEY`（讀生效設定需管理員 key） |
+
+評測流程（`owui_eval.py`）：檢索設定一律用 Open WebUI 的全域設定，腳本沒有 `--hybrid` 旗標（0.13.4 的 per-request hybrid 不可靠）；要比較設定就先在 UI 改全域設定再跑，腳本會印出並記錄當下生效的設定。第一次跑讓它自動校準頁碼基準，確定後用 `--page-offset` 固定。`--triage-out` 的題號清單可交給 `make_eval_review_sheet.py` 當第 4 個參數，審查表只留未命中題與抽樣命中題。案場評測集的 anchor 是原文摘錄，檔名用 `03_docs/eval/site_*.jsonl`（已在 `.gitignore`）。
 
 ```powershell
 py -3.10 -m pip install -r requirements-dev.txt   # pytest、openpyxl（只在開發機）
