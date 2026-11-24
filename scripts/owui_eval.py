@@ -105,8 +105,10 @@ def run_once(qs: list[dict], search, k: int, warmup: int = 0) -> tuple[list[dict
         search(q["question"], k)
     for q in qs:
         t0 = time.perf_counter()
-        results.append(search(q["question"], k))
-        lats.append(time.perf_counter() - t0)
+        res = search(q["question"], k)
+        results.append(res)
+        # 重播模式的結果自帶當時量到的延遲（_sec）；一般模式用這裡量到的
+        lats.append(res["_sec"] if isinstance(res, dict) and "_sec" in res else time.perf_counter() - t0)
     return results, lats
 
 
@@ -223,6 +225,24 @@ def evaluate(qs, search, k, repeat, page_offset, sample, seed, warmup=0):
     return summary, ranks, triage(qs, ranks, sample, seed), stable
 
 
+def load_replay(path: str, qs: list[dict]):
+    """重播檔格式：{"config": {生效設定}, "runs": [[{"sec":秒, "metadatas":[[{name,source,page}…]]} × 題數] × 重跑次數]}。
+    每一輪的結果依題目順序排列。回傳 (search, config, 重跑次數)；題數對不上就中止。"""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    runs = data.get("runs") or []
+    if not runs or any(len(r) != len(qs) for r in runs):
+        sys.exit(f"重播檔每輪的題數必須等於題目數（{len(qs)}）：{[len(r) for r in runs]}")
+    order = [res for run in runs for res in run]
+    it = iter(order)
+
+    def search(query: str, k: int) -> dict:
+        res = dict(next(it))
+        res["_sec"] = res.pop("sec", 0.0)
+        return res
+
+    return search, data.get("config") or {}, len(runs)
+
+
 def _positive(s: str) -> int:
     try:
         v = int(s)
@@ -248,12 +268,16 @@ def main(argv=None, search=None) -> int:
     ap.add_argument("--no-metrics", action="store_true", help="不寫 metrics.csv")
     ap.add_argument("--triage-out")
     ap.add_argument("--base-url", default=os.environ.get("OWUI_BASE_URL", "http://127.0.0.1:3000"))
+    ap.add_argument("--replay", help="重播已錄下的原始結果 json（不連線、不需 key）。格式見 load_replay；延遲是錄製當時量到的")
     a = ap.parse_args(argv)
 
     qs = [json.loads(x) for x in Path(a.jsonl).read_text(encoding="utf-8").splitlines() if x.strip()]
     if not qs:
         sys.exit(f"{a.jsonl} 沒有任何題目。")
     cfg: dict = {}
+    if a.replay:
+        search, cfg, a.repeat = load_replay(a.replay, qs)
+        a.warmup = 0
     if search is None:
         u = urllib.parse.urlparse(a.base_url)
         if u.scheme != "http" or u.hostname not in ("localhost", "127.0.0.1") or "@" in a.base_url:

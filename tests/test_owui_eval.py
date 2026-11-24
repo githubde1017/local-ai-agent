@@ -268,3 +268,33 @@ def test_review_sheet_subset_header_ids_file_and_empty(tmp_path):
     ids.write_text("", encoding="utf-8")
     with pytest.raises(SystemExit):
         rs.main(str(jl), str(txt), str(out), str(ids))
+
+
+def test_replay_mode_uses_recorded_results_latency_and_repeat(tmp_path):
+    qs = [q("P1", [4]), q("P2", [9])]
+    jl = tmp_path / "q.jsonl"
+    jl.write_text("\n".join(json.dumps(x) for x in qs) + "\n", encoding="utf-8")
+    run = [{"sec": 1.5, **res((F, 3))}, {"sec": 2.5, **res((F, 8))}]  # page 0 起算：實際第 4、9 頁都命中
+    rp = tmp_path / "r.json"
+    rp.write_text(json.dumps({"config": {"TOP_K": 5}, "runs": [run, run]}), encoding="utf-8")
+    out = tmp_path / "m.csv"
+    rc = ev.main(["--jsonl", str(jl), "--replay", str(rp), "--metrics", str(out)])
+    assert rc == 0
+    text = out.read_text(encoding="utf-8")
+    assert ",eval_baseline_recall@5,1.0," in text and ",eval_baseline_page_offset,1," in text
+    assert ",eval_baseline_p50_s,1.5," in text and ",eval_baseline_p95_s,2.5," in text  # 用錄製的延遲
+    assert "TOP_K=5" in text  # 生效設定記進 command 欄
+
+
+def test_replay_rejects_wrong_question_count_and_detects_unstable_runs(tmp_path):
+    import pytest
+    qs = [q("P1", [4])]
+    jl = tmp_path / "q.jsonl"
+    jl.write_text(json.dumps(qs[0]) + "\n", encoding="utf-8")
+    bad = tmp_path / "bad.json"
+    bad.write_text(json.dumps({"runs": [[{"sec": 1, **res((F, 3))}, {"sec": 1, **res((F, 3))}]]}), encoding="utf-8")
+    with pytest.raises(SystemExit):
+        ev.main(["--jsonl", str(jl), "--replay", str(bad), "--no-metrics"])
+    unstable = tmp_path / "u.json"
+    unstable.write_text(json.dumps({"runs": [[{"sec": 1, **res((F, 3))}], [{"sec": 1, **res((F, 8))}]]}), encoding="utf-8")
+    assert ev.main(["--jsonl", str(jl), "--replay", str(unstable), "--no-metrics"]) == 2
