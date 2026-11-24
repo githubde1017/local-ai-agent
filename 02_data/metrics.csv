@@ -1,0 +1,15 @@
+date,commit,metric,value,command
+2026-11-18,c9fd3f4,iobom_pytest_passed,11,py -3.10 -m pytest -q tests
+2026-11-18,c9fd3f4,iobom_injected_error_types_caught,7,py -3.10 -m pytest -q tests
+2026-11-18,c9fd3f4,eval_public_draft_questions,30,scripts/make_eval_public_415.py
+2026-11-18,c9fd3f4,owui_runtime_check_passed,9,scripts/owui_runtime_check.py
+2026-11-18,c9fd3f4,public_io_unmatched,7,scripts/owui_runtime_check.py
+2026-11-19,2e8b867,iobom_pytest_passed,21,py -3.10 -m pytest -q tests
+2026-11-19,2e8b867,owui_runtime_check_passed_v0134,13,scripts/owui_runtime_check.py
+2026-11-19,2e8b867,card_height_after_reload_px,814,02_data/owui_card_check_20261119.txt
+2026-11-22,20dce74,pytest_passed,40,py -3.10 -m pytest -q tests
+2026-11-24,4fd8fa0,eval_baseline_recall@5,0.8,py -3.10 -I scripts/owui_eval.py --jsonl 03_docs/eval/public_415-2025_draft.jsonl --replay 02_data/eval_replay_public415_baseline_20261124.json --config baseline --triage-out D:/local-ai-agent/_review/triage_ids.txt # 生效設定：CHUNK_OVERLAP=100;CHUNK_SIZE=1000;ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER=True;ENABLE_RAG_HYBRID_SEARCH=False;HYBRID_BM25_WEIGHT=0.5;PDF_LOADER_MODE=page;RAG_RERANKING_MODEL=;RELEVANCE_THRESHOLD=0;TOP_K=5;TOP_K_RERANKER=3
+2026-11-24,4fd8fa0,eval_baseline_mrr,0.6806,py -3.10 -I scripts/owui_eval.py --jsonl 03_docs/eval/public_415-2025_draft.jsonl --replay 02_data/eval_replay_public415_baseline_20261124.json --config baseline --triage-out D:/local-ai-agent/_review/triage_ids.txt # 生效設定：CHUNK_OVERLAP=100;CHUNK_SIZE=1000;ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER=True;ENABLE_RAG_HYBRID_SEARCH=False;HYBRID_BM25_WEIGHT=0.5;PDF_LOADER_MODE=page;RAG_RERANKING_MODEL=;RELEVANCE_THRESHOLD=0;TOP_K=5;TOP_K_RERANKER=3
+2026-11-24,4fd8fa0,eval_baseline_p50_s,0.647,py -3.10 -I scripts/owui_eval.py --jsonl 03_docs/eval/public_415-2025_draft.jsonl --replay 02_data/eval_replay_public415_baseline_20261124.json --config baseline --triage-out D:/local-ai-agent/_review/triage_ids.txt # 生效設定：CHUNK_OVERLAP=100;CHUNK_SIZE=1000;ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER=True;ENABLE_RAG_HYBRID_SEARCH=False;HYBRID_BM25_WEIGHT=0.5;PDF_LOADER_MODE=page;RAG_RERANKING_MODEL=;RELEVANCE_THRESHOLD=0;TOP_K=5;TOP_K_RERANKER=3
+2026-11-24,4fd8fa0,eval_baseline_p95_s,0.712,py -3.10 -I scripts/owui_eval.py --jsonl 03_docs/eval/public_415-2025_draft.jsonl --replay 02_data/eval_replay_public415_baseline_20261124.json --config baseline --triage-out D:/local-ai-agent/_review/triage_ids.txt # 生效設定：CHUNK_OVERLAP=100;CHUNK_SIZE=1000;ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER=True;ENABLE_RAG_HYBRID_SEARCH=False;HYBRID_BM25_WEIGHT=0.5;PDF_LOADER_MODE=page;RAG_RERANKING_MODEL=;RELEVANCE_THRESHOLD=0;TOP_K=5;TOP_K_RERANKER=3
+2026-11-24,4fd8fa0,eval_baseline_page_offset,1,py -3.10 -I scripts/owui_eval.py --jsonl 03_docs/eval/public_415-2025_draft.jsonl --replay 02_data/eval_replay_public415_baseline_20261124.json --config baseline --triage-out D:/local-ai-agent/_review/triage_ids.txt # 生效設定：CHUNK_OVERLAP=100;CHUNK_SIZE=1000;ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER=True;ENABLE_RAG_HYBRID_SEARCH=False;HYBRID_BM25_WEIGHT=0.5;PDF_LOADER_MODE=page;RAG_RERANKING_MODEL=;RELEVANCE_THRESHOLD=0;TOP_K=5;TOP_K_RERANKER=3

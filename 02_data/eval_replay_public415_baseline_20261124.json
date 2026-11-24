@@ -1,0 +1,2206 @@
+{
+ "note": "2026-11-24 在已登入的瀏覽器工作階段（非 API key）對知識庫 public-415（id 73fa5b31，每個 PDF 只加入一次）逐題呼叫 /api/v1/retrieval/query/collection，k=5；先暖機 2 題不計，共 2 輪。延遲為瀏覽器端量到，略高於 Python 直連。第一版知識庫（59ba0ecf）因同檔被重複加入 3 次、回傳筆數只有 k 的約 40%，已刪除重建，該批結果作廢。",
+ "knowledge_id": "73fa5b31-f95c-4d8b-83df-75c5c7363d65",
+ "config": {
+  "CHUNK_SIZE": 1000,
+  "CHUNK_OVERLAP": 100,
+  "ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER": true,
+  "ENABLE_RAG_HYBRID_SEARCH": false,
+  "HYBRID_BM25_WEIGHT": 0.5,
+  "RAG_RERANKING_MODEL": "",
+  "RELEVANCE_THRESHOLD": 0,
+  "TOP_K": 5,
+  "TOP_K_RERANKER": 3,
+  "PDF_LOADER_MODE": "page"
+ },
+ "runs": [
+  [
+   {
+    "sec": 0.697,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 29,
+       "page_label": "30"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 20,
+       "page_label": "21"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 7,
+       "page_label": "8"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.711,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 11,
+       "page_label": "12"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 3,
+       "page_label": "4"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 47,
+       "page_label": "48"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.744,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 24,
+       "page_label": "25"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 0,
+       "page_label": "1"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.627,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 33,
+       "page_label": "34"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 12,
+       "page_label": "13"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 12,
+       "page_label": "13"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.568,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 22,
+       "page_label": "23"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.604,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 22,
+       "page_label": "23"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 30,
+       "page_label": "31"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.647,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 25,
+       "page_label": "26"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 52,
+       "page_label": "53"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 54,
+       "page_label": "55"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.665,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 22,
+       "page_label": "23"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.661,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 47,
+       "page_label": "48"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 44,
+       "page_label": "45"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.66,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 31,
+       "page_label": "32"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 37,
+       "page_label": "38"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 38,
+       "page_label": "39"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 37,
+       "page_label": "38"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.624,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 10,
+       "page_label": "11"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 10,
+       "page_label": "11"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 7,
+       "page_label": "8"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 7,
+       "page_label": "8"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.676,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 31,
+       "page_label": "32"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 29,
+       "page_label": "30"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.651,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.663,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 52,
+       "page_label": "53"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 54,
+       "page_label": "55"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.64,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.698,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 33,
+       "page_label": "34"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.689,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 20,
+       "page_label": "21"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 33,
+       "page_label": "34"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 28,
+       "page_label": "29"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.638,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 41,
+       "page_label": "42"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 41,
+       "page_label": "42"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.66,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 41,
+       "page_label": "42"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 0,
+       "page_label": "1"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.67,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 15,
+       "page_label": "16"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 14,
+       "page_label": "15"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 15,
+       "page_label": "16"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.661,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 15,
+       "page_label": "16"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 14,
+       "page_label": "15"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.661,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 46,
+       "page_label": "47"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 11,
+       "page_label": "12"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 49,
+       "page_label": "50"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.627,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 8,
+       "page_label": "9"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 45,
+       "page_label": "46"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.613,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 8,
+       "page_label": "9"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.676,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 45,
+       "page_label": "46"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 52,
+       "page_label": "53"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 44,
+       "page_label": "45"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 42,
+       "page_label": "43"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.712,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.631,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.616,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.625,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.636,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   }
+  ],
+  [
+   {
+    "sec": 0.632,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 29,
+       "page_label": "30"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 20,
+       "page_label": "21"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 7,
+       "page_label": "8"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.752,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 11,
+       "page_label": "12"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 3,
+       "page_label": "4"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 47,
+       "page_label": "48"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.697,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 24,
+       "page_label": "25"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 0,
+       "page_label": "1"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.706,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 33,
+       "page_label": "34"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 12,
+       "page_label": "13"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 12,
+       "page_label": "13"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.656,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 22,
+       "page_label": "23"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.706,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 22,
+       "page_label": "23"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 30,
+       "page_label": "31"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.664,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 25,
+       "page_label": "26"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 52,
+       "page_label": "53"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 54,
+       "page_label": "55"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.672,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 22,
+       "page_label": "23"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.679,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 47,
+       "page_label": "48"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 44,
+       "page_label": "45"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.646,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 31,
+       "page_label": "32"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 37,
+       "page_label": "38"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 38,
+       "page_label": "39"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 37,
+       "page_label": "38"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.665,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 10,
+       "page_label": "11"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 10,
+       "page_label": "11"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 7,
+       "page_label": "8"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 7,
+       "page_label": "8"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.626,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 31,
+       "page_label": "32"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 29,
+       "page_label": "30"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 5,
+       "page_label": "6"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.672,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.635,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 52,
+       "page_label": "53"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 54,
+       "page_label": "55"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.625,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.619,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 27,
+       "page_label": "28"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 33,
+       "page_label": "34"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 51,
+       "page_label": "52"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.697,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 20,
+       "page_label": "21"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 21,
+       "page_label": "22"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 32,
+       "page_label": "33"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 33,
+       "page_label": "34"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 28,
+       "page_label": "29"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.615,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 41,
+       "page_label": "42"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 41,
+       "page_label": "42"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.64,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 41,
+       "page_label": "42"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 0,
+       "page_label": "1"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.64,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 15,
+       "page_label": "16"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 14,
+       "page_label": "15"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 15,
+       "page_label": "16"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 50,
+       "page_label": "51"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.625,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 15,
+       "page_label": "16"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 14,
+       "page_label": "15"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 16,
+       "page_label": "17"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.617,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 46,
+       "page_label": "47"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 11,
+       "page_label": "12"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 49,
+       "page_label": "50"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 23,
+       "page_label": "24"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.578,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 8,
+       "page_label": "9"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 45,
+       "page_label": "46"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.644,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 8,
+       "page_label": "9"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.639,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 45,
+       "page_label": "46"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 52,
+       "page_label": "53"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 44,
+       "page_label": "45"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 48,
+       "page_label": "49"
+      },
+      {
+       "name": "415-2025_Tender.pdf",
+       "source": "415-2025_Tender.pdf",
+       "page": 42,
+       "page_label": "43"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.601,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.639,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.613,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_A_IO_Lists.pdf",
+       "source": "415-2025_Appendix_A_IO_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.677,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 2,
+       "page_label": "3"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   },
+   {
+    "sec": 0.713,
+    "metadatas": [
+     [
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 4,
+       "page_label": "5"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      },
+      {
+       "name": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "source": "415-2025_Appendix_B_Equipment_Lists.pdf",
+       "page": 6,
+       "page_label": "7"
+      }
+     ]
+    ]
+   }
+  ]
+ ]
+}

@@ -23,3 +23,12 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+
+# 5. 案場與公開語料、建置產物、測試快取
+corpus/
+owui_tools/dist/
+.pytest_cache/
+
+# 案場評測集含原文摘錄（anchor），不進 git
+03_docs/eval/site_*.jsonl
+_review/
